@@ -1,4 +1,6 @@
+using AssessmentSystem.Data;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 
@@ -28,6 +30,8 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorization();
 
+var connectionString = builder.Configuration.GetConnectionString("SqliteConnection");
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
 
 var app = builder.Build();
 
