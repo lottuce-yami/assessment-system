@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
+using AssessmentSystem.Services.Mappers;
 
 namespace AssessmentSystem.Controllers;
 
@@ -20,16 +21,20 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
 
     // GET: api/Quiz/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Quiz>> GetQuiz(long id)
+    public async Task<ActionResult<QuizDto>> GetQuiz(long id)
     {
-        var quiz = await _context.Quiz.FindAsync(id);
+        var quiz = await _context.Quiz
+            .Where(q => q.Id == id)
+            .Include(q => q.Questions)
+            .Include(q => q.Results)
+            .FirstOrDefaultAsync();
 
         if (quiz == null)
         {
             return NotFound();
         }
 
-        return quiz;
+        return quiz.ToDto();
     }
 
     // PUT: api/Quiz/5
@@ -66,12 +71,13 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     // POST: api/Quiz
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Quiz>> PostQuiz(Quiz quiz)
+    public async Task<ActionResult<Quiz>> PostQuiz(QuizInputDto quizDto)
     {
+        var quiz = quizDto.ToEntity();
         _context.Quiz.Add(quiz);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetQuiz", new { id = quiz.Id }, quiz);
+        return CreatedAtAction("GetQuiz", new { id = quiz.Id }, quiz.ToDto());
     }
 
     // DELETE: api/Quiz/5

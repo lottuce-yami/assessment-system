@@ -6,7 +6,7 @@ public class Quiz
     public required string Title { get; set; }
     public int MaxScore { get; set; }
 
-    public required List<Question> Questions { get; set; }
+    public List<Question> Questions { get; set; } = [];
 
-    public required List<Result> Results { get; set; }
+    public List<Result> Results { get; set; } = [];
 }

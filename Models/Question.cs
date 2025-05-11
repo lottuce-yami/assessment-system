@@ -10,5 +10,5 @@ public class Question
     public required List<AnswerOption> AnswerOptions { get; set; }
 
     public long QuizId { get; set; }
-    public required Quiz Quiz { get; set; }
+    public Quiz Quiz { get; set; } = null!;
 }
