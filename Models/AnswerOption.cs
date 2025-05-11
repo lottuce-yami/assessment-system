@@ -9,5 +9,5 @@ public class AnswerOption
     public Guid QuestionId { get; set; }
     public Question Question { get; set; } = null!;
 
-    public List<Answer> Answers { get; set; } = null!;
+    public List<Answer> Answers { get; set; } = [];
 }

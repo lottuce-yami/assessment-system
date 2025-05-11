@@ -4,9 +4,9 @@ public class User
 {
     public long Id { get; set; }
     public required string Username { get; set; }
-    public required string PasswordHash { get; set; }
-    public int Age { get; set; }
-    public required List<string> Interests { get; set; }
+    public string PasswordHash { get; set; } = null!;
+    public required int Age { get; set; }
+    public List<string> Interests { get; set; } = [];
     
-    public required List<Result> Results { get; set; }
+    public List<Result> Results { get; set; } = [];
 }

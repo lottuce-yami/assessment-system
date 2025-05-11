@@ -8,8 +8,8 @@ public class Answer
     public required List<AnswerOption> SelectedOptions { get; set; }
 
     public Guid QuestionId { get; set; }
-    public required Question Question { get; set; }
+    public Question Question { get; set; } = null!;
 
     public Guid ResultId { get; set; }
-    public required Result Result { get; set; }
+    public Result Result { get; set; } = null!;
 }
