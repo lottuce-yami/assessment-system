@@ -16,3 +16,9 @@ public record UserDto
     List<string> Interests,
     List<Guid> Results
 );
+
+public record UserLoginDto
+(
+    string Username,
+    string Password
+);

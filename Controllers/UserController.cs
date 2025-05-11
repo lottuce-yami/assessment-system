@@ -9,9 +9,10 @@ namespace AssessmentSystem.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class UserController(ApplicationDbContext context) : ControllerBase
+public class UserController(ApplicationDbContext context, IPasswordHasher<User> passwordHasher) : ControllerBase
 {
     private readonly ApplicationDbContext _context = context;
+    private readonly IPasswordHasher<User> _passwordHasher = passwordHasher;
 
     // GET: api/User
     [HttpGet]
@@ -75,9 +76,8 @@ public class UserController(ApplicationDbContext context) : ControllerBase
     {
         var user = userDto.ToEntity();
 
-        var hasher = new PasswordHasher<User>();
-        user.PasswordHash = hasher.HashPassword(user, userDto.Password);
-        
+        user.PasswordHash = _passwordHasher.HashPassword(user, userDto.Password);
+
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
