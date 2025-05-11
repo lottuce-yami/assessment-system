@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
+using AssessmentSystem.Services.Mappers;
+using Microsoft.AspNetCore.Identity;
 
 namespace AssessmentSystem.Controllers;
 
@@ -20,16 +22,19 @@ public class UserController(ApplicationDbContext context) : ControllerBase
 
     // GET: api/User/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<User>> GetUser(long id)
+    public async Task<ActionResult<UserDto>> GetUser(long id)
     {
-        var user = await _context.Users.FindAsync(id);
+        var user = await _context.Users
+            .Where(u => u.Id == id)
+            .Include(u => u.Results)
+            .FirstOrDefaultAsync();
 
         if (user == null)
         {
             return NotFound();
         }
 
-        return user;
+        return user.ToDto();
     }
 
     // PUT: api/User/5
@@ -66,12 +71,17 @@ public class UserController(ApplicationDbContext context) : ControllerBase
     // POST: api/User
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<User>> PostUser(User user)
+    public async Task<ActionResult<User>> PostUser(UserInputDto userDto)
     {
+        var user = userDto.ToEntity();
+
+        var hasher = new PasswordHasher<User>();
+        user.PasswordHash = hasher.HashPassword(user, userDto.Password);
+        
         _context.Users.Add(user);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetUser", new { id = user.Id }, user);
+        return CreatedAtAction("GetUser", new { id = user.Id }, user.ToDto());
     }
 
     // DELETE: api/User/5
