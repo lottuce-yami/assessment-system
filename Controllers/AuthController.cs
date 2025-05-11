@@ -50,20 +50,34 @@ public class AuthController(ApplicationDbContext context, IConfiguration config,
             });
     }
 
+    [Authorize(Roles = "Admin")]
+    [HttpGet("admin")]
+    public IActionResult GetAdminMe()
+    {
+        return Ok("You are the administrator.");
+    }
+
     private string GenerateJwtToken(User user)
     {
-        var claims = new[]
+        var isAdmin = user.Username == "admin";
+
+        var claims = new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
-            new Claim(ClaimTypes.Name, user.Username)
+            new(ClaimTypes.NameIdentifier, user.Id.ToString()),
+            new(ClaimTypes.Name, user.Username),
         };
+
+        if (isAdmin)
+        {
+            claims.Add(new Claim(ClaimTypes.Role, "Admin"));
+        }
 
         var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]!));
         var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: DateTime.Now.AddDays(7),
+            expires: isAdmin ? DateTime.Now.AddHours(1) : DateTime.Now.AddDays(7),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
