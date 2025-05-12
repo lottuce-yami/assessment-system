@@ -5,7 +5,7 @@ public class Answer
     public Guid Id { get; set; }
     public DateTimeOffset AnsweredAt { get; set; }
 
-    public required List<AnswerOption> SelectedOptions { get; set; }
+    public List<AnswerOption> SelectedOptions { get; set; } = [];
 
     public Guid QuestionId { get; set; }
     public Question Question { get; set; } = null!;

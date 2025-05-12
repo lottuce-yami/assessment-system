@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
+using AssessmentSystem.Services.Mappers;
 
 namespace AssessmentSystem.Controllers;
 
@@ -66,12 +67,18 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     // POST: api/Answer
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Answer>> PostAnswer(Answer answer)
+    public async Task<ActionResult<Answer>> PostAnswer(AnswerInputDto dto)
     {
+        var answer = dto.ToEntity();
+        answer.AnsweredAt = DateTimeOffset.UtcNow;
+
+        answer.SelectedOptions = [.. answer.SelectedOptions.Select(o => _context.AnswerOption.Find(o.Id))];
+        answer.QuestionId = answer.SelectedOptions.First().QuestionId;
+        
         _context.Answer.Add(answer);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetAnswer", new { id = answer.Id }, answer);
+        return CreatedAtAction("GetAnswer", new { id = answer.Id }, answer.ToDto());
     }
 
     // DELETE: api/Answer/5

@@ -2,6 +2,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
+using AssessmentSystem.Services.Mappers;
+using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace AssessmentSystem.Controllers;
 
@@ -65,13 +68,29 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
 
     // POST: api/Result
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Result>> PostResult(Result result)
+    public async Task<ActionResult<Result>> PostResult(ResultInputDto dto)
     {
+        var result = dto.ToEntity();
+        result.UserId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        // If no answers, create empty result
+        
+        result.Answers = [.. result.Answers.Select(a => _context.Answer.Find(a.Id))];
+        // Check if answers are for the same quiz
+        // var quizId = result.QuizId;
+        // foreach (var answer in result.Answers)
+        // {
+        //     if (answer.Question.QuizId != quizId) {
+        //         return BadRequest("Answers are not for the correct quiz");
+        //     }
+        // }
+        result.Score = result.Answers.Aggregate(0, (total, next) => total + next.Question.Difficulty);
+
         _context.Result.Add(result);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetResult", new { id = result.Id }, result);
+        return CreatedAtAction("GetResult", new { id = result.Id }, result.ToDto());
     }
 
     // DELETE: api/Result/5
