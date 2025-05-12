@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssessmentSystem.Controllers;
 
@@ -39,6 +40,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
 
     // PUT: api/Quiz/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutQuiz(long id, Quiz quiz)
     {
@@ -70,6 +72,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
 
     // POST: api/Quiz
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<Quiz>> PostQuiz(QuizInputDto quizDto)
     {
@@ -81,6 +84,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     }
 
     // DELETE: api/Quiz/5
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteQuiz(long id)
     {

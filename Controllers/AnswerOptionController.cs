@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssessmentSystem.Controllers;
 
@@ -34,6 +35,7 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
 
     // PUT: api/AnswerOption/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
     public async Task<IActionResult> PutAnswerOption(Guid id, AnswerOption answerOption)
     {
@@ -65,6 +67,7 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
 
     // POST: api/AnswerOption
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [Authorize(Roles = "Admin")]
     [HttpPost]
     public async Task<ActionResult<AnswerOption>> PostAnswerOption(AnswerOption answerOption)
     {
@@ -75,6 +78,7 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
     }
 
     // DELETE: api/AnswerOption/5
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAnswerOption(Guid id)
     {
