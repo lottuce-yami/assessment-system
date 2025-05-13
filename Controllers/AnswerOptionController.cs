@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using Microsoft.AspNetCore.Authorization;
+using AssessmentSystem.Extensions;
 
 namespace AssessmentSystem.Controllers;
 
@@ -16,9 +17,10 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
     // GET: api/AnswerOption
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<AnswerOption>>> GetAnswerOption()
+    public async Task<ActionResult<PagedResult<AnswerOption>>> GetAnswerOption([FromQuery] PaginationParams pagination)
     {
-        return await _context.AnswerOption.ToListAsync();
+        return await _context.AnswerOption
+            .ToPagedResultAsync(pagination);
     }
 
     // GET: api/AnswerOption/5

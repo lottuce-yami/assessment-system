@@ -19,7 +19,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     // GET: api/Quiz
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<QuizDto>>> GetQuiz()
+    public async Task<ActionResult<PagedResult<QuizDto>>> GetQuiz([FromQuery] PaginationParams pagination)
     {
         if (User.Identity!.IsAuthenticated)
         {
@@ -37,7 +37,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
                 })
                 .OrderByDescending(q => q.Relevance)
                 .Select(q => q.Quiz.ToDto())
-                .ToList();
+                .ToPagedResult(pagination);
 
             return relevantQuizzes;
         }
@@ -47,7 +47,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
                 .Include(q => q.Questions)
                 .Include(q => q.Results)
                 .Select(q => q.ToDto())
-                .ToListAsync();
+                .ToPagedResultAsync(pagination);
         }
     }
 

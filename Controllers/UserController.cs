@@ -21,9 +21,9 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
     // GET: api/User
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<User>>> GetUsers()
+    public async Task<ActionResult<PagedResult<User>>> GetUsers([FromQuery] PaginationParams pagination)
     {
-        return await _context.Users.ToListAsync();
+        return await _context.Users.ToPagedResultAsync(pagination);
     }
 
     // GET: api/User/5

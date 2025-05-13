@@ -18,16 +18,17 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
 
     // GET: api/Answer
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Answer>>> GetAnswer()
+    public async Task<ActionResult<PagedResult<Answer>>> GetAnswer([FromQuery] PaginationParams pagination)
     {
         if (User.IsAdmin())
         {
-            return await _context.Answer.ToListAsync();
+            return await _context.Answer
+                .ToPagedResultAsync(pagination);
         }
 
         return await _context.Answer
             .Where(a => a.Result.UserId == User.GetId())
-            .ToListAsync();
+            .ToPagedResultAsync(pagination);
     }
 
     // GET: api/Answer/5
