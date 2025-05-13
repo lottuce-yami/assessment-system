@@ -4,6 +4,8 @@ using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using AssessmentSystem.Extensions;
 
 namespace AssessmentSystem.Controllers;
 
@@ -18,7 +20,9 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Answer>>> GetAnswer()
     {
-        return await _context.Answer.ToListAsync();
+        return await _context.Answer
+            .Where(a => a.Result.UserId == User.GetId())
+            .ToListAsync();
     }
 
     // GET: api/Answer/5
@@ -27,6 +31,11 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     {
         var answer = await _context.Answer.FindAsync(id);
 
+        if (User.GetId() != answer?.Result.UserId)
+        {
+            return Forbid();
+        }
+        
         if (answer == null)
         {
             return NotFound();
@@ -43,6 +52,11 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         if (id != answer.Id)
         {
             return BadRequest();
+        }
+
+        if (User.GetId() != answer?.Result.UserId)
+        {
+            return Forbid();
         }
 
         _context.Entry(answer).State = EntityState.Modified;
@@ -91,6 +105,11 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         if (answer == null)
         {
             return NotFound();
+        }
+
+        if (User.GetId() != answer?.Result.UserId)
+        {
+            return Forbid();
         }
 
         _context.Answer.Remove(answer);

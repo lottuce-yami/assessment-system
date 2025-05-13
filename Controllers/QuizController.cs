@@ -5,6 +5,7 @@ using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using AssessmentSystem.Extensions;
 
 namespace AssessmentSystem.Controllers;
 
@@ -22,8 +23,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     {
         if (User.Identity!.IsAuthenticated)
         {
-            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-            var user = await _context.Users.FindAsync(userId);
+            var user = await _context.Users.FindAsync(User.GetId());
 
             var quizzes = await _context.Quiz
                 .Include(q => q.Questions)

@@ -5,6 +5,7 @@ using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
 using Microsoft.AspNetCore.Authorization;
 using System.Security.Claims;
+using AssessmentSystem.Extensions;
 
 namespace AssessmentSystem.Controllers;
 
@@ -19,7 +20,9 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Result>>> GetResult()
     {
-        return await _context.Result.ToListAsync();
+        return await _context.Result
+            .Where(r => r.UserId == User.GetId())
+            .ToListAsync();
     }
 
     // GET: api/Result/5
@@ -27,6 +30,11 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
     public async Task<ActionResult<Result>> GetResult(Guid id)
     {
         var result = await _context.Result.FindAsync(id);
+
+        if (User.GetId() != result?.UserId)
+        {
+            return Forbid();
+        }
 
         if (result == null)
         {
@@ -44,6 +52,11 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
         if (id != result.Id)
         {
             return BadRequest();
+        }
+
+        if (User.GetId() != result.UserId)
+        {
+            return Forbid();
         }
 
         _context.Entry(result).State = EntityState.Modified;
@@ -73,7 +86,7 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
     public async Task<ActionResult<Result>> PostResult(ResultInputDto dto)
     {
         var result = dto.ToEntity();
-        result.UserId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        result.UserId = (long)User.GetId()!;
         // If no answers, create empty result
         
         result.Answers = [.. result.Answers.Select(a => _context.Answer.Find(a.Id))];
@@ -101,6 +114,11 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
         if (result == null)
         {
             return NotFound();
+        }
+
+        if (User.GetId() != result.UserId)
+        {
+            return Forbid();
         }
 
         _context.Result.Remove(result);

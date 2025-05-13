@@ -5,6 +5,8 @@ using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using AssessmentSystem.Extensions;
 
 namespace AssessmentSystem.Controllers;
 
@@ -50,6 +52,11 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
         {
             return BadRequest();
         }
+        
+        if (User.GetId() != id)
+        {
+            return Forbid();
+        }
 
         _context.Entry(user).State = EntityState.Modified;
 
@@ -92,6 +99,11 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(long id)
     {
+        if (User.GetId() != id)
+        {
+            return Forbid();
+        }
+
         var user = await _context.Users.FindAsync(id);
         if (user == null)
         {
