@@ -53,7 +53,7 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
             return BadRequest();
         }
         
-        if (User.GetId() != id)
+        if (User.GetId() != id || !User.IsAdmin())
         {
             return Forbid();
         }
@@ -99,7 +99,7 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUser(long id)
     {
-        if (User.GetId() != id)
+        if (User.GetId() != id || !User.IsAdmin())
         {
             return Forbid();
         }

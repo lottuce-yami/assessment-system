@@ -20,6 +20,11 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Answer>>> GetAnswer()
     {
+        if (User.IsAdmin())
+        {
+            return await _context.Answer.ToListAsync();
+        }
+
         return await _context.Answer
             .Where(a => a.Result.UserId == User.GetId())
             .ToListAsync();
@@ -31,7 +36,7 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     {
         var answer = await _context.Answer.FindAsync(id);
 
-        if (User.GetId() != answer?.Result.UserId)
+        if (User.GetId() != answer?.Result.UserId || !User.IsAdmin())
         {
             return Forbid();
         }
@@ -54,7 +59,7 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
             return BadRequest();
         }
 
-        if (User.GetId() != answer?.Result.UserId)
+        if (User.GetId() != answer?.Result.UserId || !User.IsAdmin())
         {
             return Forbid();
         }
@@ -107,7 +112,7 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
             return NotFound();
         }
 
-        if (User.GetId() != answer?.Result.UserId)
+        if (User.GetId() != answer?.Result.UserId || !User.IsAdmin())
         {
             return Forbid();
         }
