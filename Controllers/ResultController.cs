@@ -8,6 +8,7 @@ using System.Security.Claims;
 
 namespace AssessmentSystem.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class ResultController(ApplicationDbContext context) : ControllerBase
@@ -68,7 +69,6 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
 
     // POST: api/Result
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Result>> PostResult(ResultInputDto dto)
     {

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AssessmentSystem.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class QuestionController(ApplicationDbContext context) : ControllerBase
@@ -13,6 +14,7 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     private readonly ApplicationDbContext _context = context;
 
     // GET: api/Question
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Question>>> GetQuestion()
     {

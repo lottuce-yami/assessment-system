@@ -8,6 +8,7 @@ using System.Security.Claims;
 
 namespace AssessmentSystem.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class QuizController(ApplicationDbContext context) : ControllerBase
@@ -15,6 +16,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     private readonly ApplicationDbContext _context = context;
 
     // GET: api/Quiz
+    [AllowAnonymous]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<QuizDto>>> GetQuiz()
     {

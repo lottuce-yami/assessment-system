@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssessmentSystem.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class AnswerController(ApplicationDbContext context) : ControllerBase

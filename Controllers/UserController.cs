@@ -4,9 +4,11 @@ using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AssessmentSystem.Controllers;
 
+[Authorize]
 [Route("api/[controller]")]
 [ApiController]
 public class UserController(ApplicationDbContext context, IPasswordHasher<User> passwordHasher) : ControllerBase
@@ -15,6 +17,7 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
     private readonly IPasswordHasher<User> _passwordHasher = passwordHasher;
 
     // GET: api/User
+    [Authorize(Roles = "Admin")]
     [HttpGet]
     public async Task<ActionResult<IEnumerable<User>>> GetUsers()
     {
@@ -71,6 +74,7 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
 
     // POST: api/User
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
+    [AllowAnonymous]
     [HttpPost]
     public async Task<ActionResult<User>> PostUser(UserInputDto userDto)
     {
