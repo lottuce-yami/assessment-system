@@ -4,6 +4,7 @@ using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using AssessmentSystem.Services.Mappers;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
 
 namespace AssessmentSystem.Controllers;
 
@@ -15,9 +16,66 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
 
     // GET: api/Quiz
     [HttpGet]
-    public async Task<ActionResult<IEnumerable<Quiz>>> GetQuiz()
+    public async Task<ActionResult<IEnumerable<QuizDto>>> GetQuiz()
     {
-        return await _context.Quiz.ToListAsync();
+        if (User.Identity!.IsAuthenticated)
+        {
+            var userId = long.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+            var user = await _context.Users.FindAsync(userId);
+
+            var quizzes = await _context.Quiz
+                .Include(q => q.Questions)
+                .Include(q => q.Results)
+                .ToListAsync();
+
+            var relevantQuizzes = quizzes
+                .Select(quiz => new {
+                    Quiz = quiz,
+                    Relevance = CalculateRelevance(quiz, user!)
+                })
+                .OrderByDescending(q => q.Relevance)
+                .Select(q => q.Quiz.ToDto())
+                .ToList();
+
+            return relevantQuizzes;
+        }
+        else
+        {
+            return await _context.Quiz
+                .Include(q => q.Questions)
+                .Include(q => q.Results)
+                .Select(q => q.ToDto())
+                .ToListAsync();
+        }
+    }
+
+    private static int CalculateRelevance(Quiz quiz, User user)
+    {
+        int relevance = 0;
+
+        foreach (var question in quiz.Questions)
+        {
+            int topicMatches = question.Topics.Count(t => user.Interests.Contains(t));
+            relevance += topicMatches * 2;
+
+            var expectedDifficulty = GetRecommendedDifficulty(user.Age);
+            var diffDelta = Math.Abs(expectedDifficulty - question.Difficulty);
+            relevance += 5 - diffDelta;
+        }
+
+        return relevance;
+    }
+
+    private static int GetRecommendedDifficulty(int age)
+    {
+        return age switch
+        {
+            <= 13 => 1,
+            <= 16 => 2,
+            <= 18 => 3,
+            <= 22 => 4,
+            _ => 5
+        };
     }
 
     // GET: api/Quiz/5
