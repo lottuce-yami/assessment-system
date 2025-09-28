@@ -77,7 +77,7 @@ public class AuthController(ApplicationDbContext context, IConfiguration config,
 
         var token = new JwtSecurityToken(
             claims: claims,
-            expires: isAdmin ? DateTime.Now.AddHours(1) : DateTime.Now.AddDays(7),
+            expires: DateTime.Now.AddDays(1),
             signingCredentials: creds);
 
         return new JwtSecurityTokenHandler().WriteToken(token);
