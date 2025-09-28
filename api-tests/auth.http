@@ -1,2 +1,28 @@
 # Auth API
-# Base: https://localhost:5144/api
+
+# Log in
+# ✅ Should return 200 OK with a token
+# @prompt username
+# @prompt password
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "username": "{{username}}",
+    "password": "{{password}}"
+}
+
+###
+
+# Get current user
+# ✅ Should return 200 OK with id & username
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Get admin check
+# ✅ Should return 200 OK with admin confirmation
+# Admin
+GET {{baseUrl}}/auth/admin
+Authorization: Bearer {{$dotenv TOKEN}}

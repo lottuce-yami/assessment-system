@@ -1,2 +1,34 @@
 # Results API
-# Base: https://localhost:5144/api
+
+# Get all items
+# ✅ Should return 200 OK with a list of items
+GET {{baseUrl}}/result
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Get item
+# Should return 200 OK with an item
+GET {{baseUrl}}/result/1
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Update item
+# Should return 204 No Content
+PUT {{baseUrl}}/result/1
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Add item
+# Should return 201 Created with a created item
+POST {{baseUrl}}/result
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Delete item
+# Should return 204 No Content
+DELETE {{baseUrl}}/result/1
+Authorization: Bearer {{$dotenv TOKEN}}

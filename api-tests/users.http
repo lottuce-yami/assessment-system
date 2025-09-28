@@ -1,2 +1,34 @@
 # Users API
-# Base: https://localhost:5144/api
+
+# Get all items
+# ✅ Should return 200 OK with a list of items
+# Admin
+GET {{baseUrl}}/user
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Get item
+# Should return 200 OK with an item
+GET {{baseUrl}}/user/1
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Update item
+# Should return 204 No Content
+PUT {{baseUrl}}/user/1
+Authorization: Bearer {{$dotenv TOKEN}}
+
+###
+
+# Add item
+# Should return 201 Created with a created item
+POST {{baseUrl}}/user
+
+###
+
+# Delete item
+# Should return 204 No Content
+DELETE {{baseUrl}}/user/1
+Authorization: Bearer {{$dotenv TOKEN}}
