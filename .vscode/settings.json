@@ -2,7 +2,7 @@
     "rest-client.environmentVariables": {
         "$shared": {},
         "local": {
-            "baseUrl": "http://localhost:5144/api"
+            "baseUrl": "https://localhost:7153/api"
         }
     }
 }
