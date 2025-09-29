@@ -1,34 +1,50 @@
 # Users API
 
-# Get all items
-# ✅ Should return 200 OK with a list of items
-# Admin
+# Get all users
+# ✅ Should return 200 OK with a list of users
+# Admin-only
 GET {{baseUrl}}/user
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Get item
-# Should return 200 OK with an item
-GET {{baseUrl}}/user/1
+# Get user
+# ✅ Should return 200 OK with a user
+# @prompt id
+GET {{baseUrl}}/user/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Update item
-# Should return 204 No Content
-PUT {{baseUrl}}/user/1
+# Update user
+# ❌ Should return 204 No Content
+# Self- or admin- only
+# @prompt id
+
+PUT {{baseUrl}}/user/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
 
 ###
 
-# Add item
-# Should return 201 Created with a created item
+# Add user
+# ✅ Should return 201 Created with a created user
 POST {{baseUrl}}/user
+Content-Type: application/json
+
+{
+    "username": "test",
+    "password": "test",
+    "age": 1,
+    "interests": []
+}
 
 ###
 
-# Delete item
-# Should return 204 No Content
-DELETE {{baseUrl}}/user/1
+# Delete user
+# ❌ Should return 204 No Content
+# Self- or admin- only
+# @prompt id
+
+DELETE {{baseUrl}}/user/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
