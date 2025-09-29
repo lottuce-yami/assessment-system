@@ -23,6 +23,6 @@ Authorization: Bearer {{$dotenv TOKEN}}
 
 # Get admin check
 # ✅ Should return 200 OK with admin confirmation
-# Admin
+# Admin-only
 GET {{baseUrl}}/auth/admin
 Authorization: Bearer {{$dotenv TOKEN}}

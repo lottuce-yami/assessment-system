@@ -1,34 +1,39 @@
 # Answers API
 
-# Get all items
-# ✅ Should return 200 OK with a list of items
+# Get all answers
+# ✅ Should return 200 OK with a list of answers
 GET {{baseUrl}}/answer
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Get item
-# Should return 200 OK with an item
-GET {{baseUrl}}/answer/1
+# Get answer
+# ❌✅ Should return 200 OK with an answer
+# @prompt id
+GET {{baseUrl}}/answer/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Update item
-# Should return 204 No Content
-PUT {{baseUrl}}/answer/1
+# Update answer
+# ❌✅ Should return 204 No Content
+# @prompt id
+PUT {{baseUrl}}/answer/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Add item
-# Should return 201 Created with a created item
+# Add answer
+# ❌ Should return 201 Created with a created answer
+
 POST {{baseUrl}}/answer
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
 
 ###
 
-# Delete item
-# Should return 204 No Content
-DELETE {{baseUrl}}/answer/1
+# Delete answer
+# ❌✅ Should return 204 No Content
+# @prompt id
+DELETE {{baseUrl}}/answer/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
