@@ -1,36 +1,46 @@
 # Quizzes API
 
-# Get all items
-# ✅ Should return 200 OK with a list of items
+# Get all quizzes
+# ✅ Should return 200 OK with a list of quizzes
 GET {{baseUrl}}/quiz
 
 ###
 
-# Get item
-# Should return 200 OK with an item
-GET {{baseUrl}}/quiz/1
+# Get quiz
+# ✅ Should return 200 OK with a quiz
+# @prompt id
+GET {{baseUrl}}/quiz/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Update item
-# Should return 204 No Content
-# Admin
-PUT {{baseUrl}}/quiz/1
+# Update quiz
+# ❌ Should return 204 No Content
+# Admin-only
+# @prompt id
+
+PUT {{baseUrl}}/quiz/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Add item
-# Should return 201 Created with a created item
-# Admin
+# Add quiz
+# ✅ Should return 201 Created with a created quiz
+# Admin-only
 POST {{baseUrl}}/quiz
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
+
+{
+    "title": "test",
+    "questions": []
+}
 
 ###
 
-# Delete item
-# Should return 204 No Content
-# Admin
-DELETE {{baseUrl}}/quiz/1
+# Delete quiz
+# ✅ Should return 204 No Content
+# Admin-only
+# @prompt id
+DELETE {{baseUrl}}/quiz/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
