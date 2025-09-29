@@ -1,34 +1,44 @@
 # Results API
 
-# Get all items
-# ✅ Should return 200 OK with a list of items
+# Get all results
+# ✅ Should return 200 OK with a list of results
 GET {{baseUrl}}/result
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Get item
-# Should return 200 OK with an item
-GET {{baseUrl}}/result/1
+# Get result
+# ✅ Should return 200 OK with a result
+# @prompt id
+GET {{baseUrl}}/result/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Update item
-# Should return 204 No Content
-PUT {{baseUrl}}/result/1
+# Update result
+# ❌ Should return 204 No Content
+# @prompt id
+
+PUT {{baseUrl}}/result/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Add item
-# Should return 201 Created with a created item
+# Add result
+# ✅ Should return 201 Created with a created result
 POST {{baseUrl}}/result
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
+
+{
+    "quizId": 1,
+    "answersId": []
+}
 
 ###
 
-# Delete item
-# Should return 204 No Content
-DELETE {{baseUrl}}/result/1
+# Delete result
+# ✅ Should return 204 No Content
+# @prompt id
+DELETE {{baseUrl}}/result/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
