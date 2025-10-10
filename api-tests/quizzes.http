@@ -33,7 +33,38 @@ Content-Type: application/json
 
 {
     "title": "test",
-    "questions": []
+    "questions": [
+        {
+            "text": "question1",
+            "topics": [],
+            "difficulty": 1,
+            "answerOptions": [
+                {
+                    "text": "ao1_1",
+                    "isCorrect": true
+                },
+                {
+                    "text": "ao1_2",
+                    "isCorrect": false
+                }
+            ]
+        },
+        {
+            "text": "question2",
+            "topics": [],
+            "difficulty": 2,
+            "answerOptions": [
+                {
+                    "text": "ao2_1",
+                    "isCorrect": false
+                },
+                {
+                    "text": "ao2_2",
+                    "isCorrect": true
+                }
+            ]
+        }
+    ]
 }
 
 ###

@@ -7,3 +7,13 @@ public record QuestionInputDto
     int Difficulty,
     List<AnswerOptionInputDto> AnswerOptions
 );
+
+public record QuestionDto
+(
+    Guid Id,
+    string Text,
+    List<string> Topics,
+    int Difficulty,
+    List<Guid> AnswerOptionsId,
+    long QuizId
+);
