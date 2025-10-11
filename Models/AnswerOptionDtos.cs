@@ -17,7 +17,7 @@ public record AnswerOptionDto
 (
     Guid Id,
     string Text,
-    Guid QuestiondId
+    Guid QuestionId
 );
 
 public record AnswerOptionAdminDto
