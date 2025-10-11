@@ -42,9 +42,8 @@ Content-Type: application/json
 ###
 
 # Delete user
-# ❌ Should return 204 No Content
+# ✅ Should return 204 No Content
 # Self- or admin- only
 # @prompt id
-
 DELETE {{baseUrl}}/user/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
