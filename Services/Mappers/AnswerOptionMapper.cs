@@ -4,11 +4,15 @@ namespace AssessmentSystem.Services.Mappers;
 
 public static class AnswerOptionMapper
 {
-    public static AnswerOption ToEntity(this AnswerOptionInputDto dto) => new AnswerOption
+    public static AnswerOption ToEntity(this AnswerOptionInputDto dto) =>
+        MapCommonFields(dto.Text, dto.IsCorrect);
+
+    public static AnswerOption ToEntity(this AnswerOptionInputAloneDto dto)
     {
-        Text = dto.Text,
-        IsCorrect = dto.IsCorrect
-    };
+        var answerOption = MapCommonFields(dto.Text, dto.IsCorrect);
+        answerOption.QuestionId = dto.QuestionId;
+        return answerOption;
+    }
 
     public static AnswerOptionDto ToDto(this AnswerOption answerOption) => new AnswerOptionDto
     (
@@ -25,4 +29,16 @@ public static class AnswerOptionMapper
         answerOption.QuestionId,
         [.. answerOption.Answers.Select(a => a.Id)]
     );
+
+    private static AnswerOption MapCommonFields(
+        string text,
+        bool isCorrect
+        )
+    {
+        return new AnswerOption
+        {
+            Text = text,
+            IsCorrect = isCorrect
+        };
+    }
 }

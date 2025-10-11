@@ -26,11 +26,18 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Add answer option
-# ❌ Should return 201 Created with a created answer option
+# ✅ Should return 201 Created with a created answer option
 # Admin-only
-
+# @prompt questionId
 POST {{baseUrl}}/answeroption
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
+
+{
+    "text": "test",
+    "isCorrect": true,
+    "questionId": "{{questionId}}"
+}
 
 ###
 

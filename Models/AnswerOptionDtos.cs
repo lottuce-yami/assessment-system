@@ -6,6 +6,13 @@ public record AnswerOptionInputDto
     bool IsCorrect
 );
 
+public record AnswerOptionInputAloneDto
+(
+    string Text,
+    bool IsCorrect,
+    Guid QuestionId
+);
+
 public record AnswerOptionDto
 (
     Guid Id,

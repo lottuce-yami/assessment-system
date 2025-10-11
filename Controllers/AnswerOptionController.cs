@@ -84,12 +84,13 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<AnswerOption>> PostAnswerOption(AnswerOption answerOption)
+    public async Task<ActionResult<AnswerOptionDto>> PostAnswerOption(AnswerOptionInputAloneDto answerOptionDto)
     {
+        var answerOption = answerOptionDto.ToEntity();
         _context.AnswerOption.Add(answerOption);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetAnswerOption", new { id = answerOption.Id }, answerOption);
+        return CreatedAtAction("GetAnswerOption", new { id = answerOption.Id }, answerOption.ToDto());
     }
 
     // DELETE: api/AnswerOption/5
