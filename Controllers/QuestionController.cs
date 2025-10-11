@@ -4,6 +4,7 @@ using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using AssessmentSystem.Extensions;
+using AssessmentSystem.Services.Mappers;
 
 namespace AssessmentSystem.Controllers;
 
@@ -73,12 +74,13 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [Authorize(Roles = "Admin")]
     [HttpPost]
-    public async Task<ActionResult<Question>> PostQuestion(Question question)
+    public async Task<ActionResult<QuestionDto>> PostQuestion(QuestionInputAloneDto questionDto)
     {
+        var question = questionDto.ToEntity();
         _context.Question.Add(question);
         await _context.SaveChangesAsync();
 
-        return CreatedAtAction("GetQuestion", new { id = question.Id }, question);
+        return CreatedAtAction("GetQuestion", new { id = question.Id }, question.ToDto());
     }
 
     // DELETE: api/Question/5

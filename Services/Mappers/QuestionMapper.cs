@@ -4,13 +4,15 @@ namespace AssessmentSystem.Services.Mappers;
 
 public static class QuestionMapper
 {
-    public static Question ToEntity(this QuestionInputDto dto) => new Question
+    public static Question ToEntity(this QuestionInputDto dto) =>
+        MapCommonFields(dto.Text, dto.Topics, dto.Difficulty, dto.AnswerOptions);
+
+    public static Question ToEntity(this QuestionInputAloneDto dto)
     {
-        Text = dto.Text,
-        Topics = dto.Topics,
-        Difficulty = dto.Difficulty,
-        AnswerOptions = [.. dto.AnswerOptions.Select(ao => ao.ToEntity())]
-    };
+        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty, dto.AnswerOptions);
+        question.QuizId = dto.QuizId;
+        return question;
+    }
 
     public static QuestionDto ToDto(this Question question) => new QuestionDto
     (
@@ -21,4 +23,20 @@ public static class QuestionMapper
         [.. question.AnswerOptions.Select(ao => ao.Id)],
         question.QuizId
     );
+
+    private static Question MapCommonFields(
+        string text,
+        List<string> topics,
+        int difficulty,
+        List<AnswerOptionInputDto> answerOptions
+        )
+    {
+        return new Question
+        {
+            Text = text,
+            Topics = topics,
+            Difficulty = difficulty,
+            AnswerOptions = [.. answerOptions.Select(ao => ao.ToEntity())]
+        };
+    }
 }

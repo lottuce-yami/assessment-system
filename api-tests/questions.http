@@ -27,11 +27,20 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Add question
-# ❌ Should return 201 Created with a created question
+# ✅ Should return 201 Created with a created question
 # Admin-only
-
+# @prompt quizId
 POST {{baseUrl}}/question
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
+
+{
+    "text": "test",
+    "topics": [],
+    "difficulty": 1,
+    "answeroptions": [],
+    "quizId": {{quizId}}
+}
 
 ###
 

@@ -8,6 +8,14 @@ public record QuestionInputDto
     List<AnswerOptionInputDto> AnswerOptions
 );
 
+public record QuestionInputAloneDto(
+    string Text,
+    List<string> Topics,
+    int Difficulty,
+    List<AnswerOptionInputDto> AnswerOptions,
+    long QuizId
+);
+
 public record QuestionDto
 (
     Guid Id,
