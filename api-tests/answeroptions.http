@@ -9,7 +9,7 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Get answer option
-# ❌✅ Should return 200 OK with an answer option
+# ✅ Should return 200 OK with an answer option
 # @prompt id
 GET {{baseUrl}}/answeroption/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
