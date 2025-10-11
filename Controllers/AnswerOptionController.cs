@@ -4,6 +4,7 @@ using AssessmentSystem.Data;
 using AssessmentSystem.Models;
 using Microsoft.AspNetCore.Authorization;
 using AssessmentSystem.Extensions;
+using AssessmentSystem.Services.Mappers;
 
 namespace AssessmentSystem.Controllers;
 
@@ -25,16 +26,26 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
 
     // GET: api/AnswerOption/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<AnswerOption>> GetAnswerOption(Guid id)
+    public async Task<ActionResult<AnswerOptionDto>> GetAnswerOption(Guid id)
     {
-        var answerOption = await _context.AnswerOption.FindAsync(id);
+        var answerOption = await _context.AnswerOption
+            .Where(ao => ao.Id == id)
+            .Include(ao => ao.Answers)
+            .FirstOrDefaultAsync();
 
         if (answerOption == null)
         {
             return NotFound();
         }
 
-        return answerOption;
+        if (User.IsAdmin())
+        {
+            return answerOption.ToAdminDto();
+        }
+        else
+        {
+            return answerOption.ToDto();
+        }
     }
 
     // PUT: api/AnswerOption/5

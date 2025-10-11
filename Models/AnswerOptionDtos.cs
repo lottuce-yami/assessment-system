@@ -20,4 +20,4 @@ public record AnswerOptionAdminDto
     bool IsCorrect,
     Guid QuestionId,
     List<Guid> AnswersId
-);
+) : AnswerOptionDto(Id, Text, QuestionId);
