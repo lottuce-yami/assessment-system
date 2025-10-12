@@ -42,14 +42,14 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutQuestion(Guid id, Question question)
+    public async Task<IActionResult> PutQuestion(Guid id, QuestionEditDto questionDto)
     {
-        if (id != question.Id)
+        if (id != questionDto.Id)
         {
             return BadRequest();
         }
 
-        _context.Entry(question).State = EntityState.Modified;
+        _context.Entry(questionDto.ToEntity()).State = EntityState.Modified;
 
         try
         {

@@ -14,6 +14,14 @@ public static class QuestionMapper
         return question;
     }
 
+    public static Question ToEntity(this QuestionEditDto dto)
+    {
+        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty, dto.AnswerOptions);
+        question.Id = dto.Id;
+        question.QuizId = dto.QuizId;
+        return question;
+    }
+
     public static QuestionDto ToDto(this Question question) => new QuestionDto
     (
         question.Id,
