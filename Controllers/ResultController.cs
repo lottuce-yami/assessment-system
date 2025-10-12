@@ -18,16 +18,16 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
 
     // GET: api/Result
     [HttpGet]
-    public async Task<ActionResult<PagedResult<Result>>> GetResult([FromQuery] PaginationParams pagination)
+    public async Task<ActionResult<PagedResult<ResultDto>>> GetResult([FromQuery] PaginationParams pagination)
     {
         if (User.IsAdmin())
         {
-            return await _context.Result.ToPagedResultAsync(pagination);
+            return await _context.Result.ToPagedResultAsync(pagination, r => r.ToDto());
         }
         
         return await _context.Result
             .Where(r => r.UserId == User.GetId())
-            .ToPagedResultAsync(pagination);
+            .ToPagedResultAsync(pagination, r => r.ToDto());
     }
 
     // GET: api/Result/5

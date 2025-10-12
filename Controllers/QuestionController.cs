@@ -18,10 +18,10 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     // GET: api/Question
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<PagedResult<Question>>> GetQuestion([FromQuery] PaginationParams pagination)
+    public async Task<ActionResult<PagedResult<QuestionDto>>> GetQuestion([FromQuery] PaginationParams pagination)
     {
         return await _context.Question
-            .ToPagedResultAsync(pagination);
+            .ToPagedResultAsync(pagination, q => q.ToDto());
     }
 
     // GET: api/Question/5

@@ -36,8 +36,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
                     Relevance = CalculateRelevance(quiz, user!)
                 })
                 .OrderByDescending(q => q.Relevance)
-                .Select(q => q.Quiz.ToDto())
-                .ToPagedResult(pagination);
+                .ToPagedResult(pagination, q => q.Quiz.ToDto());
 
             return relevantQuizzes;
         }
@@ -46,8 +45,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
             return await _context.Quiz
                 .Include(q => q.Questions)
                 .Include(q => q.Results)
-                .Select(q => q.ToDto())
-                .ToPagedResultAsync(pagination);
+                .ToPagedResultAsync(pagination, q => q.ToDto());
         }
     }
 

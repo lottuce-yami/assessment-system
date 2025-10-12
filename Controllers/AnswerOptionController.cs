@@ -18,10 +18,10 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
     // GET: api/AnswerOption
     [Authorize(Roles = "Admin")]
     [HttpGet]
-    public async Task<ActionResult<PagedResult<AnswerOption>>> GetAnswerOption([FromQuery] PaginationParams pagination)
+    public async Task<ActionResult<PagedResult<AnswerOptionAdminDto>>> GetAnswerOption([FromQuery] PaginationParams pagination)
     {
         return await _context.AnswerOption
-            .ToPagedResultAsync(pagination);
+            .ToPagedResultAsync(pagination, ao => ao.ToAdminDto());
     }
 
     // GET: api/AnswerOption/5
