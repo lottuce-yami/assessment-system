@@ -13,6 +13,14 @@ public record AnswerOptionInputAloneDto
     Guid QuestionId
 );
 
+public record AnswerOptionEditDto
+(
+    Guid Id,
+    string Text,
+    bool IsCorrect,
+    Guid QuestionId
+);
+
 public record AnswerOptionDto
 (
     Guid Id,

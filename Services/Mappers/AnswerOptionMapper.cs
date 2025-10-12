@@ -14,6 +14,14 @@ public static class AnswerOptionMapper
         return answerOption;
     }
 
+    public static AnswerOption ToEntity(this AnswerOptionEditDto dto)
+    {
+        var answerOption = MapCommonFields(dto.Text, dto.IsCorrect);
+        answerOption.Id = dto.Id;
+        answerOption.QuestionId = dto.QuestionId;
+        return answerOption;
+    }
+
     public static AnswerOptionDto ToDto(this AnswerOption answerOption) => new AnswerOptionDto
     (
         answerOption.Id,

@@ -52,14 +52,14 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutAnswerOption(Guid id, AnswerOption answerOption)
+    public async Task<IActionResult> PutAnswerOption(Guid id, AnswerOptionEditDto answerOptionDto)
     {
-        if (id != answerOption.Id)
+        if (id != answerOptionDto.Id)
         {
             return BadRequest();
         }
 
-        _context.Entry(answerOption).State = EntityState.Modified;
+        _context.Entry(answerOptionDto.ToEntity()).State = EntityState.Modified;
 
         try
         {

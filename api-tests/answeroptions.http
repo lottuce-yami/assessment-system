@@ -17,11 +17,20 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Update answer option
-# ❌✅ Should return 204 No Content
+# ✅ Should return 204 No Content
 # Admin-only
 # @prompt id
+# @prompt questionId
 PUT {{baseUrl}}/answeroption/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
+
+{
+    "id": "{{id}}",
+    "text": "Test",
+    "isCorrect": false,
+    "questionId": "{{questionId}}"
+}
 
 ###
 
