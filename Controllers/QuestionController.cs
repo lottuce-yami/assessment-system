@@ -21,6 +21,7 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     public async Task<ActionResult<PagedResult<QuestionDto>>> GetQuestion([FromQuery] PaginationParams pagination)
     {
         return await _context.Question
+            .Include(q => q.AnswerOptions)
             .ToPagedResultAsync(pagination, q => q.ToDto());
     }
 

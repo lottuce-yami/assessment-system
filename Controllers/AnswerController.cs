@@ -23,11 +23,13 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         if (User.IsAdmin())
         {
             return await _context.Answer
+                .Include(a => a.SelectedOptions)
                 .ToPagedResultAsync(pagination, a => a.ToDto());
         }
 
         return await _context.Answer
             .Where(a => a.Result.UserId == User.GetId())
+            .Include(a => a.SelectedOptions)
             .ToPagedResultAsync(pagination, a => a.ToDto());
     }
 

@@ -22,11 +22,14 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
     {
         if (User.IsAdmin())
         {
-            return await _context.Result.ToPagedResultAsync(pagination, r => r.ToDto());
+            return await _context.Result
+                .Include(r => r.Answers)
+                .ToPagedResultAsync(pagination, r => r.ToDto());
         }
         
         return await _context.Result
             .Where(r => r.UserId == User.GetId())
+            .Include(r => r.Answers)
             .ToPagedResultAsync(pagination, r => r.ToDto());
     }
 
