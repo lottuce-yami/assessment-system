@@ -26,16 +26,19 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
 
     // GET: api/Question/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Question>> GetQuestion(Guid id)
+    public async Task<ActionResult<QuestionDto>> GetQuestion(Guid id)
     {
-        var question = await _context.Question.FindAsync(id);
+        var question = await _context.Question
+            .Where(q => q.Id == id)
+            .Include(q => q.AnswerOptions)
+            .FirstOrDefaultAsync();
 
         if (question == null)
         {
             return NotFound();
         }
 
-        return question;
+        return question.ToDto();
     }
 
     // PUT: api/Question/5
