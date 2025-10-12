@@ -35,21 +35,24 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
 
     // GET: api/Result/5
     [HttpGet("{id}")]
-    public async Task<ActionResult<Result>> GetResult(Guid id)
+    public async Task<ActionResult<ResultDto>> GetResult(Guid id)
     {
-        var result = await _context.Result.FindAsync(id);
-
-        if (User.GetId() != result?.UserId || !User.IsAdmin())
-        {
-            return Forbid();
-        }
+        var result = await _context.Result
+            .Where(r => r.Id == id)
+            .Include(r => r.Answers)
+            .FirstOrDefaultAsync();
 
         if (result == null)
         {
             return NotFound();
         }
 
-        return result;
+        if (User.GetId() != result.UserId && !User.IsAdmin())
+        {
+            return Forbid();
+        }
+
+        return result.ToDto();
     }
 
     // PUT: api/Result/5
