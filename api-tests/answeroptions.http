@@ -51,7 +51,7 @@ Content-Type: application/json
 ###
 
 # Delete answer option
-# ❌✅ Should return 204 No Content
+# ✅ Should return 204 No Content
 # Admin-only
 # @prompt id
 DELETE {{baseUrl}}/answeroption/{{id}}
