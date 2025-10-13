@@ -9,4 +9,9 @@ public class Quiz
     public List<Question> Questions { get; set; } = [];
 
     public List<Result> Results { get; set; } = [];
+
+    public void CalculateMaxScore()
+    {
+        MaxScore = Questions.Aggregate(0, (total, next) => total + next.Difficulty);
+    }
 }

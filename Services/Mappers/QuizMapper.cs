@@ -4,12 +4,17 @@ namespace AssessmentSystem.Services.Mappers;
 
 public static class QuizMapper
 {
-    public static Quiz ToEntity(this QuizInputDto dto) => new Quiz
-    {
-        Title = dto.Title,
-        MaxScore = dto.Questions.Aggregate(0, (total, next) => total + next.Difficulty),
-        Questions = [.. dto.Questions.Select(q => q.ToEntity())]
-    };
+    public static Quiz ToEntity(this QuizInputDto dto) {
+        var quiz = new Quiz
+        {
+            Title = dto.Title,
+            Questions = [.. dto.Questions.Select(q => q.ToEntity())]
+        };
+        
+        quiz.CalculateMaxScore();
+
+        return quiz;
+    }
 
     public static QuizDto ToDto(this Quiz quiz) => new QuizDto(
         quiz.Id,
