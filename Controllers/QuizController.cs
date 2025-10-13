@@ -100,14 +100,14 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [Authorize(Roles = "Admin")]
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutQuiz(long id, Quiz quiz)
+    public async Task<IActionResult> PutQuiz(long id, QuizEditDto quizDto)
     {
-        if (id != quiz.Id)
+        if (id != quizDto.Id)
         {
             return BadRequest();
         }
 
-        _context.Entry(quiz).State = EntityState.Modified;
+        _context.Entry(quizDto.ToEntity()).State = EntityState.Modified;
 
         try
         {

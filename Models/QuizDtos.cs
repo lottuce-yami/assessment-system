@@ -6,6 +6,13 @@ public record QuizInputDto
     List<QuestionInputDto> Questions
 );
 
+public record QuizEditDto
+(
+    long Id,
+    string Title,
+    List<QuestionInputDto> Questions
+);
+
 public record QuizDto
 (
     long Id,

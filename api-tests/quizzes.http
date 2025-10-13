@@ -15,12 +15,18 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Update quiz
-# ❌ Should return 204 No Content
+# ✅ Should return 204 No Content
 # Admin-only
 # @prompt id
-
 PUT {{baseUrl}}/quiz/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
+Content-Type: application/json
+
+{
+    "id": "{{id}}",
+    "title": "Test Quiz",
+    "questions": []
+}
 
 ###
 
