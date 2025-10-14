@@ -1,8 +1,12 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace AssessmentSystem.Models;
 
 public record UserInputDto
 (
-    string Username,
+    [StringLength(maximumLength: 16, MinimumLength = 3)]
+    [RegularExpression("^[a-z][-a-z0-9_]*")]
+        string Username,
     string Password,
     int Age,
     List<string> Interests
