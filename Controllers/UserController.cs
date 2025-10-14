@@ -36,7 +36,7 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
         {
             return Forbid();
         }
-        
+
         var user = await _context.Users
             .Where(u => u.Id == id)
             .Include(u => u.Results)
@@ -53,19 +53,23 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
     // PUT: api/User/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPut("{id}")]
-    public async Task<IActionResult> PutUser(long id, User user)
+    public async Task<IActionResult> PutUser(long id, UserEditDto userDto)
     {
-        if (id != user.Id)
+        if (id != userDto.Id)
         {
             return BadRequest();
         }
-        
-        if (User.GetId() != id || !User.IsAdmin())
+
+        if (User.GetId() != id && !User.IsAdmin())
         {
             return Forbid();
         }
 
+        var user = userDto.ToEntity();
+
         _context.Entry(user).State = EntityState.Modified;
+        _context.Entry(user).Property(u => u.PasswordHash).IsModified = false;
+        _context.Entry(user).Collection(u => u.Results).IsModified = false;
 
         try
         {

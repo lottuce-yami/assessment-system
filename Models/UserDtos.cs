@@ -14,6 +14,16 @@ public record UserInputDto
     List<string> Interests
 );
 
+public record UserEditDto
+(
+    long Id,
+    [StringLength(maximumLength: 16, MinimumLength = 3)]
+    [RegularExpression("^[a-z][-a-z0-9_]*")]
+        string Username,
+    int Age,
+    List<string> Interests
+);
+
 public record UserDto
 (
     long Id,

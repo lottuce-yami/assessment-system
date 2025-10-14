@@ -18,13 +18,19 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Update user
-# ❌ Should return 204 No Content
+# ✅ Should return 204 No Content
 # Self- or admin- only
 # @prompt id
-
 PUT {{baseUrl}}/user/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 Content-Type: application/json
+
+{
+    "id": {{id}},
+    "username": "test_username",
+    "age": 2,
+    "interests": ["testing"]
+}
 
 ###
 
