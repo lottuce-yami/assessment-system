@@ -10,6 +10,7 @@ Authorization: Bearer {{$dotenv TOKEN}}
 
 # Get user
 # ✅ Should return 200 OK with a user
+# Self- or admin- only
 # @prompt id
 GET {{baseUrl}}/user/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}

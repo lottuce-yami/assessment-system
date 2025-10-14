@@ -32,6 +32,11 @@ public class UserController(ApplicationDbContext context, IPasswordHasher<User> 
     [HttpGet("{id}")]
     public async Task<ActionResult<UserDto>> GetUser(long id)
     {
+        if (User.GetId() != id && !User.IsAdmin())
+        {
+            return Forbid();
+        }
+        
         var user = await _context.Users
             .Where(u => u.Id == id)
             .Include(u => u.Results)
