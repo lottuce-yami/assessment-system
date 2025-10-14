@@ -7,7 +7,9 @@ public record UserInputDto
     [StringLength(maximumLength: 16, MinimumLength = 3)]
     [RegularExpression("^[a-z][-a-z0-9_]*")]
         string Username,
-    string Password,
+    [StringLength(maximumLength: 128, MinimumLength = 8)]
+    [RegularExpression("(?=.*\\d)(?=.*[a-z])(?=.*[A-Z])(?=.*\\W).*")]
+        string Password,
     int Age,
     List<string> Interests
 );
