@@ -53,7 +53,12 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
             return BadRequest();
         }
 
-        _context.Entry(questionDto.ToEntity()).State = EntityState.Modified;
+        var question = questionDto.ToEntity();
+
+        _context.Entry(question).State = EntityState.Modified;
+        _context.Entry(question).Property(q => q.QuizId).IsModified = false;
+        _context.Entry(question).Reference(q => q.Quiz).IsModified = false;
+        _context.Entry(question).Collection(q => q.AnswerOptions).IsModified = false;
 
         try
         {

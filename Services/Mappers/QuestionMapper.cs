@@ -4,21 +4,28 @@ namespace AssessmentSystem.Services.Mappers;
 
 public static class QuestionMapper
 {
-    public static Question ToEntity(this QuestionInputDto dto) =>
-        MapCommonFields(dto.Text, dto.Topics, dto.Difficulty, dto.AnswerOptions);
+    public static Question ToEntity(this QuestionInputDto dto)
+    {
+        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty);
+        question.AnswerOptions = [.. dto.AnswerOptions.Select(ao => ao.ToEntity())];
 
+        return question;
+    }
+        
     public static Question ToEntity(this QuestionInputAloneDto dto)
     {
-        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty, dto.AnswerOptions);
+        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty);
+        question.AnswerOptions = [.. dto.AnswerOptions.Select(ao => ao.ToEntity())];
         question.QuizId = dto.QuizId;
+
         return question;
     }
 
     public static Question ToEntity(this QuestionEditDto dto)
     {
-        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty, dto.AnswerOptions);
+        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty);
         question.Id = dto.Id;
-        question.QuizId = dto.QuizId;
+        
         return question;
     }
 
@@ -32,19 +39,13 @@ public static class QuestionMapper
         question.QuizId
     );
 
-    private static Question MapCommonFields(
-        string text,
-        List<string> topics,
-        int difficulty,
-        List<AnswerOptionInputDto> answerOptions
-        )
+    private static Question MapCommonFields(string text, List<string> topics, int difficulty)
     {
         return new Question
         {
             Text = text,
             Topics = topics,
-            Difficulty = difficulty,
-            AnswerOptions = [.. answerOptions.Select(ao => ao.ToEntity())]
+            Difficulty = difficulty
         };
     }
 }

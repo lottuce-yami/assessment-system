@@ -20,7 +20,6 @@ Authorization: Bearer {{$dotenv TOKEN}}
 # ✅ Should return 204 No Content
 # Admin-only
 # @prompt id
-# @prompt quizId
 PUT {{baseUrl}}/question/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
 Content-Type: application/json
@@ -28,10 +27,8 @@ Content-Type: application/json
 {
     "id": "{{id}}",
     "text": "Test?",
-    "topics": [],
-    "difficulty": 2,
-    "answeroptions": [],
-    "quizId": {{quizId}}
+    "topics": ["testing"],
+    "difficulty": 2
 }
 
 ###

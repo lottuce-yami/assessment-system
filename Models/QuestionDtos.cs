@@ -21,9 +21,7 @@ public record QuestionEditDto
     Guid Id,
     string Text,
     List<string> Topics,
-    int Difficulty,
-    List<AnswerOptionInputDto> AnswerOptions,
-    long QuizId
+    int Difficulty
 );
 
 public record QuestionDto
