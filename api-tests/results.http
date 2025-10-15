@@ -26,13 +26,13 @@ Authorization: Bearer {{$dotenv TOKEN}}
 
 # Add result
 # ✅ Should return 201 Created with a created result
+# @prompt quizId
 POST {{baseUrl}}/result
 Authorization: Bearer {{$dotenv TOKEN}}
 Content-Type: application/json
 
 {
-    "quizId": 1,
-    "answersId": []
+    "quizId": {{quizId}}
 }
 
 ###

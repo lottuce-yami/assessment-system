@@ -2,8 +2,7 @@ namespace AssessmentSystem.Models;
 
 public record ResultInputDto
 (
-    long QuizId,
-    List<Guid> AnswersId
+    long QuizId
 );
 
 public record ResultDto

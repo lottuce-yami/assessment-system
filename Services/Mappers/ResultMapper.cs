@@ -5,8 +5,7 @@ namespace AssessmentSystem.Services.Mappers;
 public static class ResultMapper
 {
     public static Result ToEntity(this ResultInputDto dto) => new Result {
-        QuizId = dto.QuizId,
-        Answers = [.. dto.AnswersId.Select(id => new Answer { Id = id })]
+        QuizId = dto.QuizId
     };
 
     public static ResultDto ToDto(this Result result) => new ResultDto (

@@ -94,22 +94,10 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
     // POST: api/Result
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
-    public async Task<ActionResult<Result>> PostResult(ResultInputDto dto)
+    public async Task<ActionResult<ResultDto>> PostResult(ResultInputDto dto)
     {
         var result = dto.ToEntity();
         result.UserId = (long)User.GetId()!;
-        // If no answers, create empty result
-        
-        result.Answers = [.. result.Answers.Select(a => _context.Answer.Find(a.Id))];
-        // Check if answers are for the same quiz
-        // var quizId = result.QuizId;
-        // foreach (var answer in result.Answers)
-        // {
-        //     if (answer.Question.QuizId != quizId) {
-        //         return BadRequest("Answers are not for the correct quiz");
-        //     }
-        // }
-        result.Score = result.Answers.Aggregate(0, (total, next) => total + next.Question.Difficulty);
 
         _context.Result.Add(result);
         await _context.SaveChangesAsync();
