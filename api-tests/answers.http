@@ -15,14 +15,6 @@ Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Update answer
-# ❌✅ Should return 204 No Content
-# @prompt id
-PUT {{baseUrl}}/answer/{{id}}
-Authorization: Bearer {{$dotenv TOKEN}}
-
-###
-
 # Add answer
 # ❌ Should return 201 Created with a created answer
 

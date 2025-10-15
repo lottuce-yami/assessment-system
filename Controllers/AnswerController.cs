@@ -55,42 +55,6 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         return answer.ToDto();
     }
 
-    // PUT: api/Answer/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutAnswer(Guid id, Answer answer)
-    {
-        if (id != answer.Id)
-        {
-            return BadRequest();
-        }
-
-        if (User.GetId() != answer?.Result.UserId || !User.IsAdmin())
-        {
-            return Forbid();
-        }
-
-        _context.Entry(answer).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!AnswerExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
-    }
-
     // POST: api/Answer
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
