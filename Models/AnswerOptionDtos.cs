@@ -17,8 +17,7 @@ public record AnswerOptionEditDto
 (
     Guid Id,
     string Text,
-    bool IsCorrect,
-    Guid QuestionId
+    bool IsCorrect
 );
 
 public record AnswerOptionDto

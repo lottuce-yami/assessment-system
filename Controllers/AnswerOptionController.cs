@@ -60,7 +60,12 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
             return BadRequest();
         }
 
-        _context.Entry(answerOptionDto.ToEntity()).State = EntityState.Modified;
+        var answerOption = answerOptionDto.ToEntity();
+
+        _context.Entry(answerOption).State = EntityState.Modified;
+        _context.Entry(answerOption).Property(ao => ao.QuestionId).IsModified = false;
+        _context.Entry(answerOption).Reference(ao => ao.Question).IsModified = false;
+        _context.Entry(answerOption).Collection(ao => ao.Answers).IsModified = false;
 
         try
         {

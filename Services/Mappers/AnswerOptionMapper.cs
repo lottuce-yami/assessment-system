@@ -18,7 +18,6 @@ public static class AnswerOptionMapper
     {
         var answerOption = MapCommonFields(dto.Text, dto.IsCorrect);
         answerOption.Id = dto.Id;
-        answerOption.QuestionId = dto.QuestionId;
         return answerOption;
     }
 
@@ -38,10 +37,7 @@ public static class AnswerOptionMapper
         [.. answerOption.Answers.Select(a => a.Id)]
     );
 
-    private static AnswerOption MapCommonFields(
-        string text,
-        bool isCorrect
-        )
+    private static AnswerOption MapCommonFields(string text, bool isCorrect)
     {
         return new AnswerOption
         {
