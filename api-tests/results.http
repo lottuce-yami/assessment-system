@@ -15,15 +15,6 @@ Authorization: Bearer {{$dotenv TOKEN}}
 
 ###
 
-# Update result
-# ❌ Should return 204 No Content
-# @prompt id
-
-PUT {{baseUrl}}/result/{{id}}
-Authorization: Bearer {{$dotenv TOKEN}}
-
-###
-
 # Add result
 # ✅ Should return 201 Created with a created result
 # @prompt quizId

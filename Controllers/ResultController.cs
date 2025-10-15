@@ -55,42 +55,6 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
         return result.ToDto();
     }
 
-    // PUT: api/Result/5
-    // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutResult(Guid id, Result result)
-    {
-        if (id != result.Id)
-        {
-            return BadRequest();
-        }
-
-        if (User.GetId() != result.UserId || !User.IsAdmin())
-        {
-            return Forbid();
-        }
-
-        _context.Entry(result).State = EntityState.Modified;
-
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!ResultExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
-        }
-
-        return NoContent();
-    }
-
     // POST: api/Result
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
     [HttpPost]
