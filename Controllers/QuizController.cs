@@ -107,7 +107,12 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
             return BadRequest();
         }
 
-        _context.Entry(quizDto.ToEntity()).State = EntityState.Modified;
+        var quiz = quizDto.ToEntity();
+
+        _context.Entry(quiz).State = EntityState.Modified;
+        _context.Entry(quiz).Property(q => q.MaxScore).IsModified = false;
+        _context.Entry(quiz).Collection(q => q.Questions).IsModified = false;
+        _context.Entry(quiz).Collection(q => q.Results).IsModified = false;
 
         try
         {

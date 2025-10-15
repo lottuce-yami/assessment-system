@@ -24,8 +24,7 @@ Content-Type: application/json
 
 {
     "id": "{{id}}",
-    "title": "Test Quiz",
-    "questions": []
+    "title": "Test Quiz"
 }
 
 ###

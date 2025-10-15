@@ -6,7 +6,11 @@ public static class QuizMapper
 {
     public static Quiz ToEntity(this QuizInputDto dto)
     {
-        var quiz = MapCommonFields(dto.Title, dto.Questions);
+        var quiz = new Quiz
+        {
+            Title = dto.Title,
+            Questions = [.. dto.Questions.Select(q => q.ToEntity())]
+        };
 
         quiz.CalculateMaxScore();
 
@@ -15,10 +19,11 @@ public static class QuizMapper
     
     public static Quiz ToEntity(this QuizEditDto dto)
     {
-        var quiz = MapCommonFields(dto.Title, dto.Questions);
-        quiz.Id = dto.Id;
-
-        quiz.CalculateMaxScore();
+        var quiz = new Quiz
+        {
+            Id = dto.Id,
+            Title = dto.Title
+        };
 
         return quiz;
     }
@@ -30,13 +35,4 @@ public static class QuizMapper
         [.. quiz.Questions.Select(q => q.Id)],
         [.. quiz.Results.Select(r => r.Id)]
     );
-
-    private static Quiz MapCommonFields(string title, List<QuestionInputDto> questions)
-    {
-        return new Quiz
-        {
-            Title = title,
-            Questions = [.. questions.Select(q => q.ToEntity())]
-        };
-    }
 }
