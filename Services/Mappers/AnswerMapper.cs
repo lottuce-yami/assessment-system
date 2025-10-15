@@ -6,6 +6,7 @@ public static class AnswerMapper
 {
     public static Answer ToEntity(this AnswerInputDto dto) => new Answer {
         ResultId = dto.ResultId,
+        QuestionId = dto.QuestionId,
         SelectedOptions = [.. dto.SelectedOptions.Select(id => new AnswerOption { Id = id })]
     };
 

@@ -8,7 +8,7 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Get answer
-# ❌✅ Should return 200 OK with an answer
+# ✅ Should return 200 OK with an answer
 # @prompt id
 GET {{baseUrl}}/answer/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}
@@ -16,16 +16,25 @@ Authorization: Bearer {{$dotenv TOKEN}}
 ###
 
 # Add answer
-# ❌ Should return 201 Created with a created answer
-
+# ✅ Should return 201 Created with a created answer
+# @prompt resultId
+# @prompt questionId
+# @prompt selectedOption
 POST {{baseUrl}}/answer
 Authorization: Bearer {{$dotenv TOKEN}}
 Content-Type: application/json
 
+{
+    "resultId": "{{resultId}}",
+    "questionId": "{{questionId}}",
+    "selectedOptions": ["{{selectedOption}}"]
+}
+
 ###
 
 # Delete answer
-# ❌✅ Should return 204 No Content
+# ✅ Should return 204 No Content
 # @prompt id
+# Admin-only
 DELETE {{baseUrl}}/answer/{{id}}
 Authorization: Bearer {{$dotenv TOKEN}}

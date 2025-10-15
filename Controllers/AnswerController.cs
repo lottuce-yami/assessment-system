@@ -24,12 +24,16 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         {
             return await _context.Answer
                 .Include(a => a.SelectedOptions)
+                .Include(a => a.Question)
+                .Include(a => a.Result)
                 .ToPagedResultAsync(pagination, a => a.ToDto());
         }
 
         return await _context.Answer
             .Where(a => a.Result.UserId == User.GetId())
             .Include(a => a.SelectedOptions)
+            .Include(a => a.Question)
+            .Include(a => a.Result)
             .ToPagedResultAsync(pagination, a => a.ToDto());
     }
 
@@ -40,6 +44,8 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         var answer = await _context.Answer
             .Where(a => a.Id == id)
             .Include(a => a.SelectedOptions)
+            .Include(a => a.Question)
+            .Include(a => a.Result)
             .FirstOrDefaultAsync();
         
         if (answer == null)
@@ -60,12 +66,26 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Answer>> PostAnswer(AnswerInputDto dto)
     {
-        var answer = dto.ToEntity();
-        answer.AnsweredAt = DateTimeOffset.UtcNow;
+        var currentTime = DateTimeOffset.UtcNow;
 
-        answer.SelectedOptions = [.. answer.SelectedOptions.Select(o => _context.AnswerOption.Find(o.Id))];
-        answer.QuestionId = answer.SelectedOptions.First().QuestionId;
-        
+        var validOptions = await _context.AnswerOption
+            .AsNoTracking()
+            .Where(ao => ao.QuestionId == dto.QuestionId)
+            .Select(ao => ao.Id)
+            .ToListAsync();
+
+        if (dto.SelectedOptions.Any(so => !validOptions.Contains(so)))
+        {
+            return BadRequest();
+        }
+
+        var answer = dto.ToEntity();
+        answer.AnsweredAt = currentTime;
+        foreach (var selectedOption in answer.SelectedOptions)
+        {
+            _context.Attach(selectedOption);
+        }
+
         _context.Answer.Add(answer);
         await _context.SaveChangesAsync();
 
@@ -73,6 +93,7 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     }
 
     // DELETE: api/Answer/5
+    [Authorize(Roles = "Admin")]
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteAnswer(Guid id)
     {
@@ -80,11 +101,6 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         if (answer == null)
         {
             return NotFound();
-        }
-
-        if (User.GetId() != answer?.Result.UserId || !User.IsAdmin())
-        {
-            return Forbid();
         }
 
         _context.Answer.Remove(answer);
