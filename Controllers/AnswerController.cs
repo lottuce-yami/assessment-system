@@ -68,11 +68,13 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     {
         var currentTime = DateTimeOffset.UtcNow;
 
-        var validOptions = await _context.AnswerOption
+        var options = await _context.AnswerOption
             .AsNoTracking()
             .Where(ao => ao.QuestionId == dto.QuestionId)
-            .Select(ao => ao.Id)
+            .Select(ao => new { ao.Id, ao.IsCorrect })
             .ToListAsync();
+
+        var validOptions = options.Select(ao => ao.Id).ToList();
 
         if (dto.SelectedOptions.Any(so => !validOptions.Contains(so)))
         {
@@ -88,6 +90,23 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
 
         _context.Answer.Add(answer);
         await _context.SaveChangesAsync();
+
+        var correctOptions = options.Where(ao => ao.IsCorrect).Select(ao => ao.Id).ToHashSet();
+
+        if (correctOptions.SetEquals(dto.SelectedOptions))
+        {
+            var difficulty = await _context.Question
+                .Where(q => q.Id == dto.QuestionId)
+                .Select(q => q.Difficulty)
+                .FirstOrDefaultAsync();
+
+            if (difficulty > 0)
+            {
+                await _context.Result
+                    .Where(r => r.Id == dto.ResultId)
+                    .ExecuteUpdateAsync(calls => calls.SetProperty(r => r.Score, r => r.Score + difficulty));
+            }
+        }
 
         return CreatedAtAction("GetAnswer", new { id = answer.Id }, answer.ToDto());
     }
