@@ -19,16 +19,32 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     // GET: api/Quiz
     [AllowAnonymous]
     [HttpGet]
-    public async Task<ActionResult<PagedResult<QuizDto>>> GetQuiz([FromQuery] PaginationParams pagination)
+    public async Task<ActionResult<PagedResult<QuizDto>>> GetQuiz(
+        [FromQuery] PaginationParams pagination,
+        [FromQuery] string? search = null,
+        [FromQuery] string? topic = null)
     {
+        var query = _context.Quiz
+            .Include(q => q.Questions)
+            .Include(q => q.Results)
+            .AsQueryable();
+
+        // TODO sqlite can't lowercase cyrillic properly, implement a workaround
+        if (!string.IsNullOrWhiteSpace(search))
+        {
+            query = query.Where(q => q.Title.Contains(search.ToLower()));
+        }
+
+        if (!string.IsNullOrWhiteSpace(topic))
+        {
+            query = query.Where(q => q.Questions.Any(qu => qu.Topics.Any(t => t == topic.ToLower())));
+        }
+
         if (User.Identity!.IsAuthenticated)
         {
             var user = await _context.Users.FindAsync(User.GetId());
 
-            var quizzes = await _context.Quiz
-                .Include(q => q.Questions)
-                .Include(q => q.Results)
-                .ToListAsync();
+            var quizzes = await query.ToListAsync();
 
             var relevantQuizzes = quizzes
                 .Select(quiz => new {
@@ -42,9 +58,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
         }
         else
         {
-            return await _context.Quiz
-                .Include(q => q.Questions)
-                .Include(q => q.Results)
+            return await query
                 .ToPagedResultAsync(pagination, q => q.ToDto());
         }
     }
