@@ -12,7 +12,7 @@ public record ResultDto
     List<Guid> Answers,
     long UserId,
     long QuizId,
-    DateTimeOffset StartedAt,
-    DateTimeOffset? FinishedAt,
+    DateTime StartedAt,
+    DateTime? FinishedAt,
     int? CompletionTime
 );

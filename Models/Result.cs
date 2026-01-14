@@ -5,9 +5,9 @@ public class Result
     public Guid Id { get; set; }
     public int Score { get; set; }
 
-    public DateTimeOffset StartedAt { get; set; }
+    public DateTime StartedAt { get; set; }
 
-    public DateTimeOffset? FinishedAt { get; set; }
+    public DateTime? FinishedAt { get; set; }
 
     public List<Answer> Answers { get; set; } = [];
 

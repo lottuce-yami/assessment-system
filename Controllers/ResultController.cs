@@ -30,6 +30,7 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
         return await _context.Result
             .Where(r => r.UserId == User.GetId())
             .Include(r => r.Answers)
+            .OrderByDescending(r => r.FinishedAt)
             .ToPagedResultAsync(pagination, r => r.ToDto());
     }
 
@@ -60,7 +61,7 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ResultDto>> PostResult(ResultInputDto dto)
     {
-        var currentTime = DateTimeOffset.UtcNow;
+        var currentTime = DateTime.UtcNow;
         
         var result = dto.ToEntity();
         result.UserId = (long)User.GetId()!;
