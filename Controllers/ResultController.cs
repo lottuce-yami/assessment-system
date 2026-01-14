@@ -60,8 +60,11 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<ResultDto>> PostResult(ResultInputDto dto)
     {
+        var currentTime = DateTimeOffset.UtcNow;
+        
         var result = dto.ToEntity();
         result.UserId = (long)User.GetId()!;
+        result.StartedAt = currentTime;
 
         _context.Result.Add(result);
         await _context.SaveChangesAsync();

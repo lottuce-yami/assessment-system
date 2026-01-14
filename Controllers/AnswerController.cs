@@ -108,6 +108,10 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
             }
         }
 
+        await _context.Result
+            .Where(r => r.Id == dto.ResultId)
+            .ExecuteUpdateAsync(calls => calls.SetProperty(r => r.FinishedAt, currentTime));
+
         return CreatedAtAction("GetAnswer", new { id = answer.Id }, answer.ToDto());
     }
 

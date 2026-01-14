@@ -13,6 +13,11 @@ public static class ResultMapper
         result.Score,
         [.. result.Answers.Select(a => a.Id)],
         result.UserId,
-        result.QuizId
+        result.QuizId,
+        result.StartedAt,
+        result.FinishedAt,
+        result.FinishedAt.HasValue 
+            ? (int)(result.FinishedAt.Value - result.StartedAt).TotalSeconds 
+            : null
     );
 }

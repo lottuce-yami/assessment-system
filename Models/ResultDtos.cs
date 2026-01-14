@@ -11,5 +11,8 @@ public record ResultDto
     int Score,
     List<Guid> Answers,
     long UserId,
-    long QuizId
+    long QuizId,
+    DateTimeOffset StartedAt,
+    DateTimeOffset? FinishedAt,
+    int? CompletionTime
 );
