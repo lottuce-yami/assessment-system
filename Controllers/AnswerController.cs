@@ -66,7 +66,7 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<Answer>> PostAnswer(AnswerInputDto dto)
     {
-        var currentTime = DateTimeOffset.UtcNow;
+        var currentTime = DateTime.UtcNow;
 
         var options = await _context.AnswerOption
             .AsNoTracking()
@@ -110,7 +110,7 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
 
         await _context.Result
             .Where(r => r.Id == dto.ResultId)
-            .ExecuteUpdateAsync(calls => calls.SetProperty(r => r.FinishedAt, DateTime.UtcNow));
+            .ExecuteUpdateAsync(calls => calls.SetProperty(r => r.FinishedAt, currentTime));
 
         return CreatedAtAction("GetAnswer", new { id = answer.Id }, answer.ToDto());
     }

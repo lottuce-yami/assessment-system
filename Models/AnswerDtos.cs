@@ -10,7 +10,7 @@ public record AnswerInputDto
 public record AnswerDto
 (
     Guid Id,
-    DateTimeOffset AnsweredAt,
+    DateTime AnsweredAt,
     List<Guid> SelectedOptions,
     Guid QuestionId,
     Guid ResultId

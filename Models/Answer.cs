@@ -3,7 +3,7 @@ namespace AssessmentSystem.Models;
 public class Answer
 {
     public Guid Id { get; set; }
-    public DateTimeOffset AnsweredAt { get; set; }
+    public DateTime AnsweredAt { get; set; }
 
     public List<AnswerOption> SelectedOptions { get; set; } = [];
 
