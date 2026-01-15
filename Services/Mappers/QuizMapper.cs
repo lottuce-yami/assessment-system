@@ -12,7 +12,7 @@ public static class QuizMapper
             Questions = [.. dto.Questions.Select(q => q.ToEntity())]
         };
 
-        quiz.CalculateMaxScore();
+        quiz.UpdateMetadata();
 
         return quiz;
     }

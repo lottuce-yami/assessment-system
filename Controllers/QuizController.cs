@@ -37,7 +37,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
 
         if (!string.IsNullOrWhiteSpace(topic))
         {
-            query = query.Where(q => q.Questions.Any(qu => qu.Topics.Any(t => t == topic.ToLower())));
+            query = query.Where(q => q.MainTopics.Any(t => t == topic));
         }
 
         if (User.Identity!.IsAuthenticated)
@@ -108,6 +108,24 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
         }
 
         return quiz.ToDto();
+    }
+
+    // GET: api/Quiz/topics
+    [AllowAnonymous]
+    [HttpGet("topics")]
+    public async Task<ActionResult<List<string>>> GetAvailableTopics()
+    {
+        var allTopicLists = await _context.Quiz
+            .Select(q => q.MainTopics)
+            .ToListAsync();
+
+        var topics = allTopicLists
+            .SelectMany(t => t)
+            .Distinct()
+            .OrderBy(t => t)
+            .ToList();
+
+        return topics;
     }
 
     // PUT: api/Quiz/5

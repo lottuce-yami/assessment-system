@@ -48,17 +48,21 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutQuestion(Guid id, QuestionEditDto questionDto)
     {
-        if (id != questionDto.Id)
-        {
-            return BadRequest();
-        }
+        if (id != questionDto.Id) return BadRequest();
 
-        var question = questionDto.ToEntity();
+        var existingQuestion = await _context.Question
+            .Include(q => q.Quiz)
+            .ThenInclude(qz => qz.Questions)
+            .FirstOrDefaultAsync(q => q.Id == id);
 
-        _context.Entry(question).State = EntityState.Modified;
-        _context.Entry(question).Property(q => q.QuizId).IsModified = false;
-        _context.Entry(question).Reference(q => q.Quiz).IsModified = false;
-        _context.Entry(question).Collection(q => q.AnswerOptions).IsModified = false;
+        if (existingQuestion == null) return NotFound();
+
+        var incomingData = questionDto.ToEntity();
+
+        _context.Entry(existingQuestion).CurrentValues.SetValues(incomingData);
+        existingQuestion.Topics = incomingData.Topics;
+
+        existingQuestion.Quiz.UpdateMetadata();
 
         try
         {
@@ -66,14 +70,8 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
         }
         catch (DbUpdateConcurrencyException)
         {
-            if (!QuestionExists(id))
-            {
-                return NotFound();
-            }
-            else
-            {
-                throw;
-            }
+            if (!QuestionExists(id)) return NotFound();
+            throw;
         }
 
         return NoContent();
@@ -85,8 +83,17 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     [HttpPost]
     public async Task<ActionResult<QuestionDto>> PostQuestion(QuestionInputAloneDto questionDto)
     {
+        var quiz = await _context.Quiz
+            .Include(q => q.Questions)
+            .FirstOrDefaultAsync(q => q.Id == questionDto.QuizId);
+
+        if (quiz == null) return NotFound("Quiz not found");
+
         var question = questionDto.ToEntity();
-        _context.Question.Add(question);
+        quiz.Questions.Add(question);
+
+        quiz.UpdateMetadata();
+
         await _context.SaveChangesAsync();
 
         return CreatedAtAction("GetQuestion", new { id = question.Id }, question.ToDto());
@@ -97,13 +104,20 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteQuestion(Guid id)
     {
-        var question = await _context.Question.FindAsync(id);
-        if (question == null)
-        {
-            return NotFound();
-        }
+        var question = await _context.Question
+            .Include(q => q.Quiz)
+            .ThenInclude(qz => qz.Questions)
+            .FirstOrDefaultAsync(q => q.Id == id);
+
+        if (question == null) return NotFound();
+
+        var quiz = question.Quiz;
 
         _context.Question.Remove(question);
+
+        quiz.Questions.Remove(question); 
+        quiz.UpdateMetadata();
+
         await _context.SaveChangesAsync();
 
         return NoContent();
