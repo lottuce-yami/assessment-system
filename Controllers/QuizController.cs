@@ -27,40 +27,27 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
         var query = _context.Quiz
             .Include(q => q.Questions)
             .Include(q => q.Results)
+            .AsNoTracking()
             .AsQueryable();
 
         // TODO sqlite can't lowercase cyrillic properly, implement a workaround
         if (!string.IsNullOrWhiteSpace(search))
         {
-            query = query.Where(q => q.Title.Contains(search.ToLower()));
+            query = query
+                .Where(q => q.Title.Contains(search.ToLower()));
         }
 
         if (!string.IsNullOrWhiteSpace(topic))
         {
-            query = query.Where(q => q.MainTopics.Any(t => t == topic));
+            query = query
+                .Where(q => q.MainTopics.Any(t => t == topic));
         }
 
-        if (User.Identity!.IsAuthenticated)
-        {
-            var user = await _context.Users.FindAsync(User.GetId());
+        query = query
+            .OrderBy(q => q.Title);
 
-            var quizzes = await query.ToListAsync();
-
-            var relevantQuizzes = quizzes
-                .Select(quiz => new {
-                    Quiz = quiz,
-                    Relevance = CalculateRelevance(quiz, user!)
-                })
-                .OrderByDescending(q => q.Relevance)
-                .ToPagedResult(pagination, q => q.Quiz.ToDto());
-
-            return relevantQuizzes;
-        }
-        else
-        {
-            return await query
-                .ToPagedResultAsync(pagination, q => q.ToDto());
-        }
+        return await query
+            .ToPagedResultAsync(pagination, q => q.ToDto());
     }
 
     private static int CalculateRelevance(Quiz quiz, User user)
@@ -126,6 +113,71 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
             .ToList();
 
         return topics;
+    }
+
+    [HttpGet("recommendations/general")]
+    public async Task<ActionResult<List<QuizDto>>> GetGeneralRecommendations()
+    {
+        var user = await _context.Users.FindAsync(User.GetId());
+
+        int targetDiff = GetRecommendedDifficulty(user!.Age);
+
+        var candidates = await _context.Quiz
+            .Where(q => q.Questions.Any(x => Math.Abs(x.Difficulty - targetDiff) <= 1))
+            .Include(q => q.Questions) 
+            .Include(q => q.Results)
+            .ToListAsync();
+
+        var randomQuizzes = candidates
+            .OrderBy(q => Guid.NewGuid())
+            .Take(5)
+            .Select(q => q.ToDto())
+            .ToList();
+
+        return randomQuizzes;
+    }
+
+    // GET: api/Quiz/recommendations/personalized
+    [HttpGet("recommendations/personalized")]
+    public async Task<ActionResult<List<QuizDto>>> GetPersonalizedRecommendations()
+    {
+        var userId = User.GetId();
+
+        var userResults = await _context.Result
+            .Where(r => r.UserId == userId)
+            .Include(r => r.Quiz)
+            .ToListAsync();
+
+        var passedQuizzes = userResults
+            .Where(r => r.Quiz.MaxScore > 0 && ((double)r.Score / r.Quiz.MaxScore) > 0.6)
+            .ToList();
+
+        var strongTopics = passedQuizzes
+            .SelectMany(r => r.Quiz.MainTopics)
+            .Distinct()
+            .ToList();
+
+        if (!strongTopics.Any())
+        {
+            return new List<QuizDto>();
+        }
+
+        var takenQuizIds = userResults.Select(r => r.QuizId).ToHashSet();
+
+        var allQuizzes = await _context.Quiz
+            .Include(q => q.Questions)
+            .Include(q => q.Results)
+            .ToListAsync();
+
+        var recommended = allQuizzes
+            .Where(q => !takenQuizIds.Contains(q.Id))
+            .Where(q => q.MainTopics.Intersect(strongTopics).Any())
+            .OrderByDescending(q => q.Questions.Sum(x => x.Difficulty))
+            .Take(5)
+            .Select(q => q.ToDto())
+            .ToList();
+
+        return recommended;
     }
 
     // PUT: api/Quiz/5
