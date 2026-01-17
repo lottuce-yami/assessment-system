@@ -12,7 +12,7 @@ public static class AnswerMapper
 
     public static AnswerDto ToDto(this Answer answer) => new AnswerDto(
         answer.Id,
-        answer.AnsweredAt,
+        DateTime.SpecifyKind(answer.AnsweredAt, DateTimeKind.Utc),
         [.. answer.SelectedOptions.Select(o => o.Id)],
         answer.QuestionId,
         answer.ResultId

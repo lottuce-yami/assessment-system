@@ -14,8 +14,10 @@ public static class ResultMapper
         [.. result.Answers.Select(a => a.Id)],
         result.UserId,
         result.QuizId,
-        result.StartedAt,
-        result.FinishedAt,
+        DateTime.SpecifyKind(result.StartedAt, DateTimeKind.Utc),
+        result.FinishedAt.HasValue 
+            ? DateTime.SpecifyKind(result.FinishedAt.Value, DateTimeKind.Utc) 
+            : null,
         result.FinishedAt.HasValue 
             ? (int)(result.FinishedAt.Value - result.StartedAt).TotalSeconds 
             : null
