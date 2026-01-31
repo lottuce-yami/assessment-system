@@ -186,34 +186,65 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     [HttpPut("{id}")]
     public async Task<IActionResult> PutQuiz(long id, QuizEditDto quizDto)
     {
-        if (id != quizDto.Id)
+        var quiz = await _context.Quiz
+            .Include(q => q.Questions)
+            .ThenInclude(q => q.AnswerOptions)
+            .FirstOrDefaultAsync(q => q.Id == id);
+
+        if (quiz == null) return NotFound();
+
+        quiz.Title = quizDto.Title;
+
+        var incomingQuestionIds = quizDto.Questions
+            .Where(q => q.Id.HasValue)
+            .Select(q => q.Id.Value)
+            .ToList();
+
+        var questionsToDelete = quiz.Questions
+            .Where(q => !incomingQuestionIds.Contains(q.Id))
+            .ToList();
+
+        if (questionsToDelete.Any())
         {
-            return BadRequest();
+            _context.Question.RemoveRange(questionsToDelete);
         }
 
-        var quiz = quizDto.ToEntity();
-
-        _context.Entry(quiz).State = EntityState.Modified;
-        _context.Entry(quiz).Property(q => q.MaxScore).IsModified = false;
-        _context.Entry(quiz).Collection(q => q.Questions).IsModified = false;
-        _context.Entry(quiz).Collection(q => q.Results).IsModified = false;
-
-        try
+        foreach (var qDto in quizDto.Questions)
         {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!QuizExists(id))
+            if (qDto.Id.HasValue)
             {
-                return NotFound();
+                var dbQuestion = quiz.Questions.FirstOrDefault(q => q.Id == qDto.Id);
+                if (dbQuestion != null)
+                {
+                    dbQuestion.Text = qDto.Text;
+                    dbQuestion.Topics = qDto.Topics;
+                    dbQuestion.Difficulty = qDto.Difficulty;
+                    
+                    dbQuestion.AnswerOptions = qDto.AnswerOptions.Select(a => new AnswerOption 
+                    { 
+                        Text = a.Text, 
+                        IsCorrect = a.IsCorrect 
+                    }).ToList();
+                }
             }
             else
             {
-                throw;
+                quiz.Questions.Add(new Question
+                {
+                    Text = qDto.Text,
+                    Topics = qDto.Topics,
+                    Difficulty = qDto.Difficulty,
+
+                    AnswerOptions = qDto.AnswerOptions.Select(a => new AnswerOption 
+                    { 
+                        Text = a.Text, 
+                        IsCorrect = a.IsCorrect 
+                    }).ToList()
+                });
             }
         }
 
+        await _context.SaveChangesAsync();
         return NoContent();
     }
 

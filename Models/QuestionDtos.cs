@@ -18,10 +18,11 @@ public record QuestionInputAloneDto(
 
 public record QuestionEditDto
 (
-    Guid Id,
+    Guid? Id,
     string Text,
     List<string> Topics,
-    int Difficulty
+    int Difficulty,
+    List<AnswerOptionInputDto> AnswerOptions
 );
 
 public record QuestionDto

@@ -9,7 +9,8 @@ public record QuizInputDto
 public record QuizEditDto
 (
     long Id,
-    string Title
+    string Title,
+    List<QuestionEditDto> Questions
 );
 
 public record QuizDto
