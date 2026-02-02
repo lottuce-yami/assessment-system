@@ -21,3 +21,12 @@ public record QuizDto
     List<Guid> Questions,
     List<Guid> Results
 );
+
+public record QuizTreeDto
+(
+    long Id,
+    string Title,
+    int MaxScore,
+    List<QuestionTreeDto> Questions,
+    List<Guid> Results
+);

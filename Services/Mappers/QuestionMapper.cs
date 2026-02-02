@@ -21,13 +21,13 @@ public static class QuestionMapper
         return question;
     }
 
-    public static Question ToEntity(this QuestionEditDto dto)
-    {
-        var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty);
-        question.Id = dto.Id;
+    // public static Question ToEntity(this QuestionEditDto dto)
+    // {
+    //     var question = MapCommonFields(dto.Text, dto.Topics, dto.Difficulty);
+    //     question.Id = dto.Id;
         
-        return question;
-    }
+    //     return question;
+    // }
 
     public static QuestionDto ToDto(this Question question) => new QuestionDto
     (
@@ -37,6 +37,15 @@ public static class QuestionMapper
         question.Difficulty,
         [.. question.AnswerOptions.Select(ao => ao.Id)],
         question.QuizId
+    );
+
+    public static QuestionTreeDto ToTreeDto(this Question question) => new QuestionTreeDto
+    (
+        question.Id,
+        question.Text,
+        question.Topics,
+        question.Difficulty,
+        [.. question.AnswerOptions.Select(ao => ao.ToTreeAdminDto())]
     );
 
     private static Question MapCommonFields(string text, List<string> topics, int difficulty)

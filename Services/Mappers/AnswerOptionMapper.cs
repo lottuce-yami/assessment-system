@@ -37,6 +37,14 @@ public static class AnswerOptionMapper
         [.. answerOption.Answers.Select(a => a.Id)]
     );
 
+    public static AnswerOptionTreeAdminDto ToTreeAdminDto(this AnswerOption answerOption) => new
+    (
+        answerOption.Id,
+        answerOption.Text,
+        answerOption.IsCorrect,
+        [.. answerOption.Answers.Select(a => a.Id)]
+    );
+
     private static AnswerOption MapCommonFields(string text, bool isCorrect)
     {
         return new AnswerOption

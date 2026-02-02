@@ -35,3 +35,11 @@ public record AnswerOptionAdminDto
     Guid QuestionId,
     List<Guid> AnswersId
 ) : AnswerOptionDto(Id, Text, QuestionId);
+
+public record AnswerOptionTreeAdminDto
+(
+    Guid Id,
+    string Text,
+    bool IsCorrect,
+    List<Guid> AnswerIds
+);

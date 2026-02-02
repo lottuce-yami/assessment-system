@@ -35,4 +35,13 @@ public static class QuizMapper
         [.. quiz.Questions.Select(q => q.Id)],
         [.. quiz.Results.Select(r => r.Id)]
     );
+
+    public static QuizTreeDto ToTreeDto(this Quiz quiz) => new QuizTreeDto
+    (
+        quiz.Id,
+        quiz.Title,
+        quiz.MaxScore,
+        [.. quiz.Questions.Select(q => q.ToTreeDto())],
+        [.. quiz.Results.Select(r => r.Id)]
+    );
 }

@@ -97,6 +97,25 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
         return quiz.ToDto();
     }
 
+    // GET: api/Quiz/5/tree
+    [HttpGet("{id}/tree")]
+    public async Task<ActionResult<QuizTreeDto>> GetQuizTree(long id)
+    {
+        var quiz = await _context.Quiz
+            .Where(q => q.Id == id)
+            .Include(q => q.Questions)
+            .ThenInclude(qst => qst.AnswerOptions)
+            .Include(q => q.Results)
+            .FirstOrDefaultAsync();
+
+        if (quiz == null)
+        {
+            return NotFound();
+        }
+
+        return quiz.ToTreeDto();
+    }
+
     // GET: api/Quiz/topics
     [AllowAnonymous]
     [HttpGet("topics")]
@@ -207,6 +226,11 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
         if (questionsToDelete.Any())
         {
             _context.Question.RemoveRange(questionsToDelete);
+
+            foreach (var q in questionsToDelete)
+            {
+                quiz.Questions.Remove(q);
+            }
         }
 
         foreach (var qDto in quizDto.Questions)
@@ -243,6 +267,8 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
                 });
             }
         }
+
+        quiz.UpdateMetadata();
 
         await _context.SaveChangesAsync();
         return NoContent();

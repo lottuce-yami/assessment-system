@@ -34,3 +34,12 @@ public record QuestionDto
     List<Guid> AnswerOptionsId,
     long QuizId
 );
+
+public record QuestionTreeDto
+(
+    Guid Id,
+    string Text,
+    List<string> Topics,
+    int Difficulty,
+    List<AnswerOptionTreeAdminDto> AnswerOptions
+);

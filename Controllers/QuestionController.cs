@@ -44,38 +44,38 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
 
     // PUT: api/Question/5
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-    [Authorize(Roles = "Admin")]
-    [HttpPut("{id}")]
-    public async Task<IActionResult> PutQuestion(Guid id, QuestionEditDto questionDto)
-    {
-        if (id != questionDto.Id) return BadRequest();
+    // [Authorize(Roles = "Admin")]
+    // [HttpPut("{id}")]
+    // public async Task<IActionResult> PutQuestion(Guid id, QuestionEditDto questionDto)
+    // {
+    //     if (id != questionDto.Id) return BadRequest();
 
-        var existingQuestion = await _context.Question
-            .Include(q => q.Quiz)
-            .ThenInclude(qz => qz.Questions)
-            .FirstOrDefaultAsync(q => q.Id == id);
+    //     var existingQuestion = await _context.Question
+    //         .Include(q => q.Quiz)
+    //         .ThenInclude(qz => qz.Questions)
+    //         .FirstOrDefaultAsync(q => q.Id == id);
 
-        if (existingQuestion == null) return NotFound();
+    //     if (existingQuestion == null) return NotFound();
 
-        var incomingData = questionDto.ToEntity();
+    //     var incomingData = questionDto.ToEntity();
 
-        _context.Entry(existingQuestion).CurrentValues.SetValues(incomingData);
-        existingQuestion.Topics = incomingData.Topics;
+    //     _context.Entry(existingQuestion).CurrentValues.SetValues(incomingData);
+    //     existingQuestion.Topics = incomingData.Topics;
 
-        existingQuestion.Quiz.UpdateMetadata();
+    //     existingQuestion.Quiz.UpdateMetadata();
 
-        try
-        {
-            await _context.SaveChangesAsync();
-        }
-        catch (DbUpdateConcurrencyException)
-        {
-            if (!QuestionExists(id)) return NotFound();
-            throw;
-        }
+    //     try
+    //     {
+    //         await _context.SaveChangesAsync();
+    //     }
+    //     catch (DbUpdateConcurrencyException)
+    //     {
+    //         if (!QuestionExists(id)) return NotFound();
+    //         throw;
+    //     }
 
-        return NoContent();
-    }
+    //     return NoContent();
+    // }
 
     // POST: api/Question
     // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
