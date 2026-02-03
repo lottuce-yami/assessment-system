@@ -92,20 +92,48 @@ public class AnswerController(ApplicationDbContext context) : ControllerBase
         await _context.SaveChangesAsync();
 
         var correctOptions = options.Where(ao => ao.IsCorrect).Select(ao => ao.Id).ToHashSet();
+        bool isCorrect = correctOptions.SetEquals(dto.SelectedOptions);
 
-        if (correctOptions.SetEquals(dto.SelectedOptions))
+        var questionInfo = await _context.Question
+            .Where(q => q.Id == dto.QuestionId)
+            .Select(q => new { q.Difficulty, q.Topics })
+            .FirstOrDefaultAsync();
+
+        if (questionInfo == null) return NotFound("Question not found");
+
+        if (isCorrect && questionInfo.Difficulty > 0)
         {
-            var difficulty = await _context.Question
-                .Where(q => q.Id == dto.QuestionId)
-                .Select(q => q.Difficulty)
-                .FirstOrDefaultAsync();
+            await _context.Result
+                .Where(r => r.Id == dto.ResultId)
+                .ExecuteUpdateAsync(calls => calls.SetProperty(r => r.Score, r => r.Score + questionInfo.Difficulty));
+        }
 
-            if (difficulty > 0)
+        if (questionInfo.Topics != null && questionInfo.Topics.Count > 0)
+        {
+            var stats = await _context.ResultTopicStats
+                .Where(s => s.ResultId == dto.ResultId && questionInfo.Topics.Contains(s.Topic))
+                .ToListAsync();
+
+            foreach (var topic in questionInfo.Topics)
             {
-                await _context.Result
-                    .Where(r => r.Id == dto.ResultId)
-                    .ExecuteUpdateAsync(calls => calls.SetProperty(r => r.Score, r => r.Score + difficulty));
+                var stat = stats.FirstOrDefault(s => s.Topic == topic);
+                
+                if (stat == null)
+                {
+                    stat = new ResultTopicStat 
+                    { 
+                        ResultId = dto.ResultId, 
+                        Topic = topic, 
+                        CorrectCount = 0, 
+                        TotalCount = 0 
+                    };
+                    _context.ResultTopicStats.Add(stat);
+                }
+
+                stat.TotalCount++;
+                if (isCorrect) stat.CorrectCount++;
             }
+            await _context.SaveChangesAsync();
         }
 
         await _context.Result

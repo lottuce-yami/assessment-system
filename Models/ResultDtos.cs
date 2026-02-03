@@ -14,5 +14,6 @@ public record ResultDto
     long QuizId,
     DateTime StartedAt,
     DateTime? FinishedAt,
-    int? CompletionTime
+    int? CompletionTime,
+    List<ResultTopicStatDto> TopicStats
 );

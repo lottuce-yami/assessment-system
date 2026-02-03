@@ -41,6 +41,7 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
         var result = await _context.Result
             .Where(r => r.Id == id)
             .Include(r => r.Answers)
+            .Include(r => r.TopicStats)
             .FirstOrDefaultAsync();
 
         if (result == null)
