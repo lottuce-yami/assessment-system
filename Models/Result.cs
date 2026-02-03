@@ -11,6 +11,8 @@ public class Result
 
     public List<Answer> Answers { get; set; } = [];
 
+    public List<ResultTopicStat> TopicStats { get; set; } = [];
+
     public long UserId { get; set; }
     public User User { get; set; } = null!;
     

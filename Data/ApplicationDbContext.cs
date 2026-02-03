@@ -16,4 +16,6 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     public DbSet<Question> Question { get; set; }
 
     public DbSet<Result> Result { get; set; }
+
+    public DbSet<ResultTopicStat> ResultTopicStats { get; set; }
 }
