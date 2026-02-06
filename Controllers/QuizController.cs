@@ -22,7 +22,8 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     public async Task<ActionResult<PagedResult<QuizDto>>> GetQuiz(
         [FromQuery] PaginationParams pagination,
         [FromQuery] string? search = null,
-        [FromQuery] string? topic = null)
+        [FromQuery] string? topic = null,
+        [FromQuery] string? language = null)
     {
         var query = _context.Quiz
             .Include(q => q.Questions)
@@ -41,6 +42,12 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
         {
             query = query
                 .Where(q => q.MainTopics.Any(t => t == topic));
+        }
+
+        if (!string.IsNullOrWhiteSpace(language))
+        {
+            query = query
+                .Where(q => q.Language == language);
         }
 
         query = query
@@ -213,6 +220,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
         if (quiz == null) return NotFound();
 
         quiz.Title = quizDto.Title;
+        quiz.Language = quizDto.Language;
 
         var incomingQuestionIds = quizDto.Questions
             .Where(q => q.Id.HasValue)

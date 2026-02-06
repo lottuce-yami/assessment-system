@@ -4,6 +4,7 @@ public class Quiz
 {
     public long Id { get; set; }
     public required string Title { get; set; }
+    public required string Language { get; set; }
     public int MaxScore { get; set; }
 
     public List<Question> Questions { get; set; } = [];

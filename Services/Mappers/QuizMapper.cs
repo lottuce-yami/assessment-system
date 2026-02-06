@@ -9,7 +9,8 @@ public static class QuizMapper
         var quiz = new Quiz
         {
             Title = dto.Title,
-            Questions = [.. dto.Questions.Select(q => q.ToEntity())]
+            Questions = [.. dto.Questions.Select(q => q.ToEntity())],
+            Language = dto.Language
         };
 
         quiz.UpdateMetadata();
@@ -22,7 +23,8 @@ public static class QuizMapper
         var quiz = new Quiz
         {
             Id = dto.Id,
-            Title = dto.Title
+            Title = dto.Title,
+            Language = dto.Language
         };
 
         return quiz;
@@ -33,7 +35,9 @@ public static class QuizMapper
         quiz.Title,
         quiz.MaxScore,
         [.. quiz.Questions.Select(q => q.Id)],
-        [.. quiz.Results.Select(r => r.Id)]
+        [.. quiz.Results.Select(r => r.Id)],
+        quiz.MainTopics,
+        quiz.Language
     );
 
     public static QuizTreeDto ToTreeDto(this Quiz quiz) => new QuizTreeDto
@@ -42,6 +46,8 @@ public static class QuizMapper
         quiz.Title,
         quiz.MaxScore,
         [.. quiz.Questions.Select(q => q.ToTreeDto())],
-        [.. quiz.Results.Select(r => r.Id)]
+        [.. quiz.Results.Select(r => r.Id)],
+        quiz.MainTopics,
+        quiz.Language
     );
 }
