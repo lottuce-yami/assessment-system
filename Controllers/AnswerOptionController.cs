@@ -26,6 +26,7 @@ public class AnswerOptionController(ApplicationDbContext context) : ControllerBa
     }
 
     // GET: api/AnswerOption/5
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<AnswerOptionDto>> GetAnswerOption(Guid id)
     {

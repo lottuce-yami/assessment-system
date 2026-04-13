@@ -87,6 +87,7 @@ public class QuizController(ApplicationDbContext context) : ControllerBase
     }
 
     // GET: api/Quiz/5
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<QuizDto>> GetQuiz(long id)
     {

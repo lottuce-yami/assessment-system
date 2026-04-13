@@ -26,6 +26,7 @@ public class QuestionController(ApplicationDbContext context) : ControllerBase
     }
 
     // GET: api/Question/5
+    [AllowAnonymous]
     [HttpGet("{id}")]
     public async Task<ActionResult<QuestionDto>> GetQuestion(Guid id)
     {
