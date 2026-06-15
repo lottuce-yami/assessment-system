@@ -22,6 +22,7 @@ public static class ResultMapper
             ? (int)(result.FinishedAt.Value - result.StartedAt).TotalSeconds 
             : null,
         result.TopicStats.Select(ts => ts.ToDto())
-            .OrderByDescending(t => t.Percentage).ToList()
+            .OrderByDescending(t => t.Percentage).ToList(),
+        result.User.Username
     );
 }

@@ -15,5 +15,6 @@ public record ResultDto
     DateTime StartedAt,
     DateTime? FinishedAt,
     int? CompletionTime,
-    List<ResultTopicStatDto> TopicStats
+    List<ResultTopicStatDto> TopicStats,
+    string Username
 );

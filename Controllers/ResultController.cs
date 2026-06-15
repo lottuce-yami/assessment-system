@@ -24,12 +24,14 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
         {
             return await _context.Result
                 .Include(r => r.Answers)
+                .Include(r => r.User)
                 .ToPagedResultAsync(pagination, r => r.ToDto());
         }
         
         return await _context.Result
             .Where(r => r.UserId == User.GetId())
             .Include(r => r.Answers)
+            .Include(r => r.User)
             .OrderByDescending(r => r.FinishedAt)
             .ToPagedResultAsync(pagination, r => r.ToDto());
     }
@@ -42,6 +44,7 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
             .Where(r => r.Id == id)
             .Include(r => r.Answers)
             .Include(r => r.TopicStats)
+            .Include(r => r.User)
             .FirstOrDefaultAsync();
 
         if (result == null)
