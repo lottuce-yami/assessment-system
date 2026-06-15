@@ -25,6 +25,7 @@ public class ResultController(ApplicationDbContext context) : ControllerBase
             return await _context.Result
                 .Include(r => r.Answers)
                 .Include(r => r.User)
+                .OrderByDescending(r => r.FinishedAt)
                 .ToPagedResultAsync(pagination, r => r.ToDto());
         }
         
